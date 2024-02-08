@@ -1,5 +1,5 @@
 {
-	"name": "sk-package-with-page",
+	"name": "@gzim/sk-package-with-page",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
