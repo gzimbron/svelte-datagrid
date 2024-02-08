@@ -1,8 +1,8 @@
-name: Website
+name: Release
 
 on:
   workflow_run:
-    workflows: ['Release']
+    workflows: ["CI"]
     types:
       - completed
     branches:
@@ -14,18 +14,19 @@ jobs:
   check-workflow-status:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify Release status
+      - name: Verify CI status
         run: |
           workflow_status=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }} | jq -r .conclusion)
           if [ "$workflow_status" != "success" ]; then
-            echo "Release failed, not deploying"
+            echo "CI failed, not deploying"
             exit 1
           fi
-  build_site:
+  release:
     needs: check-workflow-status
     permissions:
-      pages: write
-    name: Build
+      contents: write
+      pull-requests: write
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -38,36 +39,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: "18.x"
           cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install --frozen-lockfile
 
-      - name: Build
-        env:
-          BASE_PATH: '/${{ github.event.repository.name }}'
-        run: pnpm build
+      - name: Package
+        run: pnpm package
 
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v2
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
         with:
-          # this should match the `pages` option in your adapter-static options
-          path: 'build/'
-  deploy:
-    name: Deploy
-    needs: build_site
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v2
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
