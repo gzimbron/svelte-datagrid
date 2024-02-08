@@ -16,8 +16,8 @@ const config = {
 			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
 		},
 		alias: {
-			$siteconfig: '/src/siteconfig.ts',
-			'$sitecomponent/*': '/src/lib/sitecomponents/*'
+			$siteconfig: './src/siteconfig.ts',
+			'$sitecomponent/*': './src/lib/sitecomponents/*'
 		}
 	}
 };
