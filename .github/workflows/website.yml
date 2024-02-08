@@ -47,7 +47,7 @@ jobs:
       - name: Build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
-        run: pnpx vite build --base=$BASE_PATH
+        run: pnpm build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v2
