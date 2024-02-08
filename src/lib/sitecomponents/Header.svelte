@@ -18,7 +18,7 @@
 			href={SITE_URL}
 		>
 			<h1 class="sr-only">{SITE_NAME}</h1>
-			<img src="/logo.webp" alt={SITE_NAME} class="w-40" />
+			<img src="{SITE_URL}/logo.webp" alt={SITE_NAME} class="w-40" />
 		</a>
 
 		<div class="flex flex-1 items-center justify-end md:justify-between">
