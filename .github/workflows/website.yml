@@ -1,14 +1,28 @@
 name: Website
 
 on:
-  push:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
     branches:
       - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  check-workflow-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify CI status
+        run: |
+          workflow_status=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }} | jq -r .conclusion)
+          if [ "$workflow_status" != "success" ]; then
+            echo "CI failed, not deploying"
+            exit 1
+          fi
   build_site:
+    needs: check-workflow-status
     permissions:
       pages: write
     name: Build
@@ -33,7 +47,7 @@ jobs:
       - name: Build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
-        run: pnpm build
+        run: pnpx vite build --base=$BASE_PATH
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v2
