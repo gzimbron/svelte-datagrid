@@ -32,8 +32,6 @@ class GridState<T> {
 	scrollTop: ReturnType<typeof createCustomState<number>>;
 	scrollLeft: ReturnType<typeof createCustomState<number>>;
 	resizing: ReturnType<typeof createCustomState<boolean>>;
-	isScrolledToRight: ReturnType<typeof createCustomState<boolean>>;
-	isScrolledToBottom: ReturnType<typeof createCustomState<boolean>>;
 	columnDragging: ReturnType<typeof createCustomState<boolean>>;
 	visibleRowsIndexes: ReturnType<typeof createCustomState<{ start: number; end: number }>>;
 
@@ -66,8 +64,6 @@ class GridState<T> {
 		this.scrollTop = createCustomState(0);
 		this.scrollLeft = createCustomState(0);
 		this.resizing = createCustomState(false);
-		this.isScrolledToRight = createCustomState(false);
-		this.isScrolledToBottom = createCustomState(false);
 		this.columnDragging = createCustomState(false);
 
 		setTimeout(() => {
@@ -113,12 +109,7 @@ class GridState<T> {
 			return;
 		}
 
-		const {
-			scrollTop: newScrollTop,
-			scrollLeft: newScrollLeft,
-			scrollWidth,
-			clientWidth
-		} = currentTarget;
+		const { scrollTop: newScrollTop, scrollLeft: newScrollLeft } = currentTarget;
 
 		const actualScrollTop = get(this.scrollTop);
 		const actualScrollLeft = get(this.scrollLeft);
@@ -130,12 +121,6 @@ class GridState<T> {
 		if (actualScrollLeft !== newScrollLeft) {
 			this.scrollLeft.set(newScrollLeft);
 		}
-
-		this.isScrolledToRight.set(Math.ceil(scrollWidth - newScrollLeft) === clientWidth);
-
-		this.isScrolledToBottom.set(
-			Math.ceil(currentTarget.scrollHeight - newScrollTop) === currentTarget.clientHeight
-		);
 
 		this.#updateVisibleRowsIndexes();
 	};

@@ -85,7 +85,11 @@
 	const onScroll = (event: UIEvent & { currentTarget: EventTarget & HTMLDivElement }) => {
 		onGridScrolled(event.currentTarget);
 
-		const percent = Math.round(($scrollTop / gridSpaceHeight) * 100);
+		const percent = Math.round(
+			(event.currentTarget.scrollTop /
+				(event.currentTarget.scrollHeight - event.currentTarget.clientHeight)) *
+				100
+		);
 
 		if (scrolledPercent === percent) return;
 		scrolledPercent = percent;
