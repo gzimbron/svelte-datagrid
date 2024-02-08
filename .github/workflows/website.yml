@@ -1,0 +1,59 @@
+name: Website
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build_site:
+    permissions:
+      pages: write
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8.6.3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        env:
+          BASE_PATH: "/${{ github.event.repository.name }}"
+        run: pnpm build
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # this should match the `pages` option in your adapter-static options
+          path: "build/"
+  deploy:
+    name: Deploy
+    needs: build_site
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v2
