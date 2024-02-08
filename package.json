@@ -91,7 +91,7 @@
 		"type": "git",
 		"url": "git+https://github.com/gzimbron/svelte-datagrid.git"
 	},
-	"homepage": "https://github.com/gzimbron/svelte-datagrid",
+	"homepage": "https://gzimbron.github.io/svelte-datagrid/",
 	"keywords": [
 		"svelte",
 		"grid",
