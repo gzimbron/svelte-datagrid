@@ -1,58 +1,265 @@
-# create-svelte
+[![npm](https://img.shields.io/npm/v/@gzim/svelte-datagrid.svg?style=flat-square)](https://www.npmjs.com/package/@gzim/svelte-datagrid)
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+# Datagrid Svelte
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+## [Demo](https://gzimbron.github.io/svelte-datagrid)
 
-## Creating a project
+Datagrid is a high-performance, feature-rich grid component for Svelte. It is designed to handle large datasets and provide a smooth scrolling experience. It is also designed to be accessible and customizable.
 
-If you're seeing this, you've probably already done this step. Congrats!
+It's based on the excellent (but deprecated) [svelte-data-grid](https://github.com/bsssshhhhhhh/svelte-data-grid).
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Features
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- High scrolling performance
+- ARIA attributes set on elements
+- Lightweight even when displaying a huge dataset due to implementation of a "virtual list" mechanism
+- Column headers remain fixed at the top of the grid
+- Custom components can be specified to control how individual table cells or column headers are displayed
 
-## Developing
+## TODO
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- [ ] Demo website
+- [ ] Re-ordering columns
+- [ ] Resizing columns
 
-```bash
-npm run dev
+## Usage:
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-## Building
-
-To build your library:
+If using within Sapper:
 
 ```bash
-npm run package
+npm install @gzim/svelte-datagrid
 ```
 
-To create a production version of your showcase app:
+If using from inside a svelte component:
 
-```bash
-npm run build
+```javascript
+import { Datagrid } from '@gzim/svelte-datagrid';
+
+<Datagrid
+	columns={columns}
+	rows={myRows}
+	rowHeight={24}
+	on:valueUpdated={onValueUpdated}
+	on:scroll={onGridScroll}
+/>;
 ```
 
-You can preview the production build with `npm run preview`.
+Datagrid requires 2 properties to be passed in order to display data: `rows` and `columns`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+`columns` is an array of objects containing at least 3 properties: `label`, `dataKey`, and `width`. A svelte component can be specified in `headerComponent` and `cellComponent` if any custom cell behavior is required.
 
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
+```typescript
+[
+	{
+		label: 'Name', // What will be displayed as the column header
+		dataKey: 'firstName', // The key of a row to get the column's data from
+		width: 400 // Width, in pixels, of column
+	},
+	{
+		label: 'Age',
+		dataName: 'age',
+		width: 150
+	}
+];
 ```
+
+`rows` is an array of objects containing the data for each table row.
+
+```javascript
+[
+	{
+		firstName: 'Gustavo',
+		age: 34
+	},
+	{
+		firstName: 'Paulina',
+		age: 31
+	},
+	{
+		firstName: 'Daphne',
+		age: 2
+	}
+];
+```
+
+## Editing Data
+
+You can use this 3 componets as cellComponent to edit data:
+
+Import the components:
+
+```typescript
+import { TextboxCell, SelectCell, CheckboxCell } from '@gzim/svelte-datagrid';
+```
+
+### Textbox Cell
+
+Textbox cell will debounce the user input.
+
+```typescript
+{
+  label: 'Name',
+  dataKey: 'name',
+  width: 250,
+  cellComponent: TextboxCell
+}
+```
+
+### Select Cell
+
+SelectCell requires that you provide an `options` array in your cell definition:
+
+```typescript
+{
+  label: 'Simpsons Character',
+  dataKey: 'simpsonChar',
+  width: 200,
+  cellComponent: SelectCell,
+  options: [
+    {
+      display: 'Homer',
+      value: 'homer'
+    },
+    {
+      display: 'Bart',
+      value: 'bart'
+    },
+    {
+      display: 'Lisa',
+      value: 'lisa'
+    },
+    {
+      display: 'Marge',
+      value: 'marge'
+    },
+    {
+      display: 'Maggie',
+      value: 'maggie'
+    }
+  ]
+}
+```
+
+### Checkbox Cell
+
+CheckboxCell will set the checked state of the checkbox depending on the boolean value of the row's data.
+
+```typescript
+{
+  display: 'Pending',
+  dataName: 'pending',
+  width: 75,
+  cellComponent: CheckboxCell
+}
+```
+
+## Custom Cell Components
+
+To create a custom cell component, create a new Svelte component following the example below.
+
+Components will be passed the following properties:
+
+- `rowNumber` - The index of the row within `rows`
+- `row` - The entire row object from `rows`
+- `column` - The entire column object from `columns`
+
+MyCustomCell.svelte
+
+```html
+<script lang="ts" generics="T">
+	import type { GridCellUpdated, GridColumn } from 'datagrid-svelte/types';
+	import { createEventDispatcher } from 'svelte';
+
+	type ComponentEventsList = {
+		valueUpdated: GridCellUpdated<T>;
+	};
+	const dispatch = createEventDispatcher<ComponentEventsList>();
+
+	export let row: T;
+	export let column: GridColumn<T>;
+	export let rowIndex: number;
+
+	const onSomethingHappens = () => {
+		dispatch('valueUpdated', {
+			row,
+			column,
+			value: 'newValue',
+			rowIndex
+		});
+	};
+</script>
+
+<div class="checkbox-cell" data-row-index="{rowIndex}">ADD HERE YOUR CUSTOM CELL CONTENT</div>
+
+<style lang="postcss">
+	.checkbox-cell {
+		text-align: center;
+	}
+</style>
+```
+
+Import the component
+
+```typescript
+import MyCustomCell from './MyCustomCell.svelte';
+```
+
+`columns` option:
+
+```typescript
+[
+  {
+    label: 'Icon'
+    dataKey: 'icon',
+    width: 300,
+    cellComponent: MyCustomCell
+  }
+]
+```
+
+## Custom Header Components
+
+Header components can also be specified in `columns` entries as the `headerComponent` property. Header components are only passed `column`, the column object from `columns`.
+
+```html
+<script lang="ts" generics="T">
+	import type { GridCellUpdated, GridColumn } from 'datagrid-svelte/types';
+
+	export let column: GridColumn<T>;
+</script>
+
+<div class="checkbox-cell"><u>~{ column.label }~</u></div>
+
+<style lang="postcss">
+	.checkbox-cell {
+		text-align: center;
+	}
+</style>
+```
+
+## Options:
+
+Datagrid provides a few options for controlling the grid and its interactions:
+
+- `rowHeight` - The row height in pixels _(Default: 24)_
+- `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
+- `--border` Css: Custom style for grid borders _(Default: 1px)_
+- `--header-border` Custom width for header row border bottom _(Default: 2px)_
+- `--header-border-color` Custom color for header row border bottom _(Default: black)_
+- `--head-bg` Custom background color for header row _(Default: white)_
+- `--cell-bg` Custom background color for body cells _(Default: white)_
+- `--textbox-cell-bg` ustom background color for textbox cells _(Default: white)_
+- `--select-cell-bg` Custom background color for select cells _(Default: white)_
+- `--head-color` Custom color for header row text.
+- `--cell-color` Custom color for body cells text
+- `--textbox-cell-color` Custom color for textbox cells text
+- `--select-cell-color` Custom color for select cells text
+
+## Events:
+
+- `scroll` - Triggered when the grid is scrolled. The scroll percent position can be accessed from `event.detail`
+- `valueUpdated` - Triggered when a cell's value is updated. The updated value can be accessed from `event.value`, other data can be accessed from `event.row`, `event.column` and `event.rowIndex`
+
+## Bugs? Suggestions?
+
+Please file an issue if you find a bug or have a suggestion for a new feature.
