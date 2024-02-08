@@ -1,0 +1,24 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	@apply bg-slate-100 min-w-[320px];
+}
+
+.btn {
+	@apply inline-block rounded border px-4 py-1 text-sm font-medium text-white hover:bg-transparent  focus:outline-none focus:ring  transition-colors ease-in;
+}
+
+.btn-primary {
+	@apply border-primary bg-primary  text-white hover:text-primary  active:text-primary;
+}
+
+.btn-secondary {
+	@apply border-secondary bg-secondary  text-white hover:text-secondary  active:text-secondary;
+}
+
+.input {
+	@apply border-2 border-solid border-slate-200 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring;
+}
