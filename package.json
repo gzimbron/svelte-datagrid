@@ -1,5 +1,5 @@
 {
-	"name": "@gzim/sk-package-with-page",
+	"name": "@gzim/svelte-datagrid",
 	"version": "0.0.0",
 	"license": "MIT",
 	"publishConfig": {
