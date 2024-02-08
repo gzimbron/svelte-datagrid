@@ -28,6 +28,7 @@
 	export let extraRows = 0;
 
 	let wrapper: HTMLDivElement;
+	let gridBody: HTMLDivElement;
 	let isResizing = false;
 	let columnDragging = false;
 	let gridHeight = 0;
@@ -44,7 +45,7 @@
 		getCellLeft,
 		getRowTop,
 		getCellZIndex,
-		onGridScrolled,
+		setNewScrollPositions,
 		setGridHeight,
 		rowHeight: gridRowHeight
 	} = createGridState({
@@ -82,14 +83,14 @@
 		rows[detail.rowIndex] = { ...rows[detail.rowIndex], [detail.column.dataKey]: detail.value };
 	};
 
-	const onScroll = (event: UIEvent & { currentTarget: EventTarget & HTMLDivElement }) => {
-		onGridScrolled(event.currentTarget);
+	const updateScrollPercent = () => {
+		if (!gridBody) return;
 
 		const percent = Math.round(
-			(event.currentTarget.scrollTop /
-				(event.currentTarget.scrollHeight - event.currentTarget.clientHeight)) *
-				100
+			(gridBody.scrollTop / (gridBody.scrollHeight - gridBody.clientHeight)) * 100
 		);
+
+		setNewScrollPositions(gridBody.scrollTop, gridBody.scrollLeft);
 
 		if (scrolledPercent === percent) return;
 		scrolledPercent = percent;
@@ -133,7 +134,12 @@
 		</div>
 	</div>
 
-	<div role="rowgroup" class="svelte-grid-body" on:scroll={onScroll}>
+	<div
+		role="rowgroup"
+		class="svelte-grid-body"
+		bind:this={gridBody}
+		on:scroll={updateScrollPercent}
+	>
 		<div class="grid-space"></div>
 
 		{#each visibleRows as row}

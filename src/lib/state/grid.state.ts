@@ -103,14 +103,7 @@ class GridState<T> {
 		return rowIndex * get(this.rowHeight);
 	};
 
-	onGridScrolled = (currentTarget: HTMLDivElement) => {
-		if (!currentTarget) {
-			console.log('no hay tablesapce');
-			return;
-		}
-
-		const { scrollTop: newScrollTop, scrollLeft: newScrollLeft } = currentTarget;
-
+	setNewScrollPositions = (newScrollTop: number, newScrollLeft: number) => {
 		const actualScrollTop = get(this.scrollTop);
 		const actualScrollLeft = get(this.scrollLeft);
 
