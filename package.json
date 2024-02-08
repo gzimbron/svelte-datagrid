@@ -1,6 +1,6 @@
 {
 	"name": "@gzim/sk-package-with-page",
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"license": "MIT",
 	"publishConfig": {
 		"access": "public"
