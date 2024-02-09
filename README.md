@@ -1,12 +1,16 @@
 [![npm](https://img.shields.io/npm/v/@gzim/svelte-datagrid.svg?style=flat-square)](https://www.npmjs.com/package/@gzim/svelte-datagrid)
 
-# Datagrid Svelte
+# Svelte DataGrid
 
 ## [Demo](https://gzimbron.github.io/svelte-datagrid)
 
-Datagrid is a high-performance, feature-rich grid component for Svelte. It is designed to handle large datasets and provide a smooth scrolling experience. It is also designed to be accessible and customizable.
+Svelte DataGrid is a high-performance, feature-rich grid component for Svelte. It is designed to handle large datasets and provide a smooth scrolling experience. It is also designed to be accessible and customizable.
 
 It's based on the excellent (but deprecated) [svelte-data-grid](https://github.com/bsssshhhhhhh/svelte-data-grid).
+
+## Demo website
+
+[![Demo website](./assets/SvelteDataGrid-demo.webp)](https://gzimbron.github.io/svelte-datagrid)
 
 ## Features
 
