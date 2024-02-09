@@ -47,11 +47,13 @@
 		getCellZIndex,
 		setNewScrollPositions,
 		setGridHeight,
+		totalRows,
 		rowHeight: gridRowHeight
 	} = createGridState({
 		columns,
 		rowHeight,
-		extraRows
+		extraRows,
+		totalRows: rows.length
 	});
 
 	beforeUpdate(() => {
@@ -59,15 +61,30 @@
 			rowHeight = MIN_ROW_HEIGHT;
 		}
 
+		if ($totalRows != rows.length) {
+			totalRows.set(rows.length);
+			scrollToRefreshView();
+		}
+
 		if (rowHeight != $gridRowHeight) {
 			gridRowHeight.set(rowHeight);
+
 			updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
+			scrollToRefreshView();
 		}
 	});
 
 	$: gridSpaceHeight = $gridRowHeight * rows.length;
 	$: updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
 	$: setGridHeight(gridHeight);
+
+	const scrollToRefreshView = () => {
+		gridBody.scrollTo({
+			top: $scrollTop - 1,
+			left: $scrollLeft - 1,
+			behavior: 'smooth'
+		});
+	};
 
 	const updateVisibleRows = (start: number, end: number) => {
 		visibleRows = rows.slice(start, end).map((x, i) => {
