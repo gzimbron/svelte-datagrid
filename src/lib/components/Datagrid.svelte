@@ -28,6 +28,7 @@
 	export let extraRows = 0;
 
 	let wrapper: HTMLDivElement;
+	let gridBody: HTMLDivElement;
 	let isResizing = false;
 	let columnDragging = false;
 	let gridHeight = 0;
@@ -44,13 +45,15 @@
 		getCellLeft,
 		getRowTop,
 		getCellZIndex,
-		onGridScrolled,
+		setNewScrollPositions,
 		setGridHeight,
+		totalRows,
 		rowHeight: gridRowHeight
 	} = createGridState({
 		columns,
 		rowHeight,
-		extraRows
+		extraRows,
+		totalRows: rows.length
 	});
 
 	beforeUpdate(() => {
@@ -58,15 +61,30 @@
 			rowHeight = MIN_ROW_HEIGHT;
 		}
 
+		if ($totalRows != rows.length) {
+			totalRows.set(rows.length);
+			scrollToRefreshView();
+		}
+
 		if (rowHeight != $gridRowHeight) {
 			gridRowHeight.set(rowHeight);
+
 			updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
+			scrollToRefreshView();
 		}
 	});
 
 	$: gridSpaceHeight = $gridRowHeight * rows.length;
 	$: updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
 	$: setGridHeight(gridHeight);
+
+	const scrollToRefreshView = () => {
+		gridBody.scrollTo({
+			top: $scrollTop - 1,
+			left: $scrollLeft - 1,
+			behavior: 'smooth'
+		});
+	};
 
 	const updateVisibleRows = (start: number, end: number) => {
 		visibleRows = rows.slice(start, end).map((x, i) => {
@@ -82,10 +100,14 @@
 		rows[detail.rowIndex] = { ...rows[detail.rowIndex], [detail.column.dataKey]: detail.value };
 	};
 
-	const onScroll = (event: UIEvent & { currentTarget: EventTarget & HTMLDivElement }) => {
-		onGridScrolled(event.currentTarget);
+	const updateScrollPercent = () => {
+		if (!gridBody) return;
 
-		const percent = Math.round(($scrollTop / gridSpaceHeight) * 100);
+		const percent = Math.round(
+			(gridBody.scrollTop / (gridBody.scrollHeight - gridBody.clientHeight)) * 100
+		);
+
+		setNewScrollPositions(gridBody.scrollTop, gridBody.scrollLeft);
 
 		if (scrolledPercent === percent) return;
 		scrolledPercent = percent;
@@ -129,7 +151,12 @@
 		</div>
 	</div>
 
-	<div role="rowgroup" class="svelte-grid-body" on:scroll={onScroll}>
+	<div
+		role="rowgroup"
+		class="svelte-grid-body"
+		bind:this={gridBody}
+		on:scroll={updateScrollPercent}
+	>
 		<div class="grid-space"></div>
 
 		{#each visibleRows as row}

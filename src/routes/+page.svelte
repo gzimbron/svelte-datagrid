@@ -91,6 +91,7 @@
 
 	const gridScrolled = ({ detail: percent }: CustomEvent<number>) => {
 		progress = percent;
+
 		if (percent > 70 && rows.length < 500) {
 			addRows(50);
 		}

@@ -20,6 +20,7 @@ export const getGridState = <T>(): GridState<T> => {
 
 interface CreateStateProps<T> {
 	rowHeight: number;
+	totalRows: number;
 	extraRows?: number;
 	columns: GridColumn<T>[];
 }
@@ -31,9 +32,8 @@ class GridState<T> {
 	rowHeight: ReturnType<typeof createCustomState<number>>;
 	scrollTop: ReturnType<typeof createCustomState<number>>;
 	scrollLeft: ReturnType<typeof createCustomState<number>>;
+	totalRows: ReturnType<typeof createCustomState<number>>;
 	resizing: ReturnType<typeof createCustomState<boolean>>;
-	isScrolledToRight: ReturnType<typeof createCustomState<boolean>>;
-	isScrolledToBottom: ReturnType<typeof createCustomState<boolean>>;
 	columnDragging: ReturnType<typeof createCustomState<boolean>>;
 	visibleRowsIndexes: ReturnType<typeof createCustomState<{ start: number; end: number }>>;
 
@@ -44,11 +44,15 @@ class GridState<T> {
 	#wrapperHeight: number;
 	#rowsInViewPort: number;
 
-	constructor({ extraRows, columns, rowHeight }: CreateStateProps<T>) {
+	constructor({ extraRows, columns, rowHeight, totalRows }: CreateStateProps<T>) {
 		this.#wrapperHeight = 0;
 		this.#rowsInViewPort = 0;
 
 		this.#extraRows = extraRows || 0;
+		this.totalRows = createCustomState(totalRows, () => {
+			this.#recalculateRowsInViewPort();
+			this.#updateVisibleRowsIndexes();
+		});
 		this.columnWidths = columns.map((column) => column.width || MIN_COLUMN_WIDTH);
 		this.gridSpaceWidth = this.columnWidths.reduce((acc, width) => acc + width, 0);
 		this.rowHeight = createCustomState(rowHeight, () => {
@@ -66,8 +70,6 @@ class GridState<T> {
 		this.scrollTop = createCustomState(0);
 		this.scrollLeft = createCustomState(0);
 		this.resizing = createCustomState(false);
-		this.isScrolledToRight = createCustomState(false);
-		this.isScrolledToBottom = createCustomState(false);
 		this.columnDragging = createCustomState(false);
 
 		setTimeout(() => {
@@ -107,19 +109,7 @@ class GridState<T> {
 		return rowIndex * get(this.rowHeight);
 	};
 
-	onGridScrolled = (currentTarget: HTMLDivElement) => {
-		if (!currentTarget) {
-			console.log('no hay tablesapce');
-			return;
-		}
-
-		const {
-			scrollTop: newScrollTop,
-			scrollLeft: newScrollLeft,
-			scrollWidth,
-			clientWidth
-		} = currentTarget;
-
+	setNewScrollPositions = (newScrollTop: number, newScrollLeft: number) => {
 		const actualScrollTop = get(this.scrollTop);
 		const actualScrollLeft = get(this.scrollLeft);
 
@@ -130,12 +120,6 @@ class GridState<T> {
 		if (actualScrollLeft !== newScrollLeft) {
 			this.scrollLeft.set(newScrollLeft);
 		}
-
-		this.isScrolledToRight.set(Math.ceil(scrollWidth - newScrollLeft) === clientWidth);
-
-		this.isScrolledToBottom.set(
-			Math.ceil(currentTarget.scrollHeight - newScrollTop) === currentTarget.clientHeight
-		);
 
 		this.#updateVisibleRowsIndexes();
 	};
