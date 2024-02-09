@@ -2,8 +2,6 @@
 
 # Svelte DataGrid
 
-## [Demo](https://gzimbron.github.io/svelte-datagrid)
-
 Svelte DataGrid is a high-performance, feature-rich grid component for Svelte. It is designed to handle large datasets and provide a smooth scrolling experience. It is also designed to be accessible and customizable.
 
 It's based on the excellent (but deprecated) [svelte-data-grid](https://github.com/bsssshhhhhhh/svelte-data-grid).
