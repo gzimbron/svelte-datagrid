@@ -1,5 +1,11 @@
 # website
 
+## 0.0.3
+
+### Patch Changes
+
+- 33b8d9c: Publish, fix #6
+
 ## 0.0.2
 
 ### Patch Changes
