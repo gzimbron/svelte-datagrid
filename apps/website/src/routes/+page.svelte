@@ -1,9 +1,6 @@
 <script lang="ts">
-	import CheckboxCell from '$lib/components/CheckboxCell.svelte';
-	import Datagrid from '$lib/components/Datagrid.svelte';
-	import SelectCell from '$lib/components/SelectCell.svelte';
-	import TextboxCell from '$lib/components/TextboxCell.svelte';
-	import type { GridCellUpdated, GridColumn, GridColumnOption } from '$lib/types.js';
+	import { Datagrid, CheckboxCell, SelectCell, TextboxCell } from '@gzim/svelte-datagrid';
+	import type { GridCellUpdated, GridColumn, GridColumnOption } from '@gzim/svelte-datagrid/types';
 	import Message from '$sitecomponent/Message.svelte';
 	import Progressbar from '$sitecomponent/Progressbar.svelte';
 
@@ -85,7 +82,9 @@
 		const { rowIndex, column, value, row } = detail;
 
 		console.log(
-			`Row ${rowIndex} Column "${column.label}" updated. \nPast Value: ${row[column.dataKey]}\nNew Value: ${value}`
+			`Row ${rowIndex} Column "${column.label}" updated. \nPast Value: ${
+				row[column.dataKey]
+			}\nNew Value: ${value}`
 		);
 	};
 
