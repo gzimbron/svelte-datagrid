@@ -98,6 +98,7 @@
 	// eslint-disable-next-line no-undef
 	const valueUpdated = ({ detail }: CustomEvent<GridCellUpdated<T>>) => {
 		rows[detail.rowIndex] = { ...rows[detail.rowIndex], [detail.column.dataKey]: detail.value };
+		visibleRows[detail.rowIndex] = { i: detail.rowIndex, data: rows[detail.rowIndex] };
 	};
 
 	const updateScrollPercent = () => {
