@@ -1,5 +1,5 @@
 name: "🐛 Bug report"
-description: Report an issue with vaul-svelte
+description: Report an issue with @gzim/svelte-datagrid
 labels: ["type: bug"]
 body:
   - type: markdown
@@ -32,7 +32,7 @@ body:
     id: system-info
     attributes:
       label: System Info
-      description: Output of `npx envinfo --system --npmPackages svelte,bits-ui,vaul-svelte,@sveltejs/kit,typescript --binaries --browsers`
+      description: Output of `npx envinfo --system --npmPackages svelte,@gzim/svelte-datagrid,@sveltejs/kit,typescript --binaries --browsers`
       render: bash
       placeholder: System, Binaries, Browsers
     validations:
@@ -45,6 +45,6 @@ body:
       options:
         - annoyance
         - blocking an upgrade
-        - blocking all usage of vaul-svelte
+        - blocking all usage of @gzim/svelte-datagrid
     validations:
       required: true
