@@ -10,7 +10,7 @@
 		"release": "changeset publish"
 	},
 	"devDependencies": {
-		"@repo/eslint-config": "workspace:*",
+		"eslint-config": "workspace:*",
 		"eslint": "^8.56.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
