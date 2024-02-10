@@ -1,29 +1,24 @@
 <script lang="ts" generics="T">
 	import { createGridState } from '$lib/state/grid.state.js';
-	import type {
-		CustomCellComponentEvents,
-		GridCellUpdated,
-		GridColumn,
-		GridProps,
-		GridRow
-	} from '$lib/types.js';
+	import type { GridCellUpdated, GridProps, GridRow } from '$lib/types.js';
 	import { beforeUpdate, createEventDispatcher } from 'svelte';
 
 	// eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
 	interface $$Props extends GridProps<T> {}
 
-	// eslint-disable-next-line no-undef
-	type ComponentEventsList = CustomCellComponentEvents<T> & {
+	type ComponentEventsList = {
 		scroll: number;
+		// eslint-disable-next-line no-undef
+		valueUpdated: GridCellUpdated<T>;
 	};
 	const dispatch = createEventDispatcher<ComponentEventsList>();
 
 	const MIN_ROW_HEIGHT = 20;
 
 	// eslint-disable-next-line no-undef
-	export let columns: GridColumn<T>[];
+	export let columns: $$Props['columns'];
 	// eslint-disable-next-line no-undef
-	export let rows: T[];
+	export let rows: $$Props['rows'];
 	export let rowHeight = 30;
 	export let extraRows = 0;
 
@@ -99,6 +94,7 @@
 	const valueUpdated = ({ detail }: CustomEvent<GridCellUpdated<T>>) => {
 		rows[detail.rowIndex] = { ...rows[detail.rowIndex], [detail.column.dataKey]: detail.value };
 		visibleRows[detail.rowIndex] = { i: detail.rowIndex, data: rows[detail.rowIndex] };
+		dispatch('valueUpdated', detail);
 	};
 
 	const updateScrollPercent = () => {
@@ -178,7 +174,6 @@
 									{column}
 									row={row.data}
 									on:valueUpdated={valueUpdated}
-									on:valueUpdated
 								/>
 							{:else}
 								{row.data[column.dataKey] || ''}
