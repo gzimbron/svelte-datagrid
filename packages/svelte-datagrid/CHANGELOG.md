@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.0.4
+
+### Patch Changes
+
+- 8536bb8: Types: Now on:valueUpdated has the type of the event instead of any
+
 ## 0.0.3
 
 ### Patch Changes
