@@ -48,16 +48,17 @@ jobs:
         run: echo "${{ toJson(steps.changesets.outputs) }}"
 
       - id: printoutputs
-        run: echo "published=${{ steps.changesets.outputs.published }}" >> "$GITHUB_OUTPUT"
+        ##if has changeset build and deploy
+        run: echo "published=${{ steps.changesets.outputs.hasChangesets }}" >> "$GITHUB_OUTPUT"
 
       - name: Build
-        if: ${{ steps.changesets.outputs.published == 'true' }}
+        if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
         run: pnpm build
 
       - name: Upload Artifacts
-        if: ${{ steps.changesets.outputs.published == 'true' }}
+        if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
         uses: actions/upload-pages-artifact@v2
         with:
           path: "apps/website/build/"
