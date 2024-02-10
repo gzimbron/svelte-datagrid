@@ -1,4 +1,4 @@
 /** @type { import("eslint").Linter.Config } */
 module.exports = {
-	extends: ['eslint-config/index.js']
+	extends: ['@mycustom/eslint-config/index.js']
 };

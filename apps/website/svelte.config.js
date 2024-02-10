@@ -8,6 +8,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		paths: {
+			// eslint-disable-next-line turbo/no-undeclared-env-vars
 			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
 		},
 		alias: {
