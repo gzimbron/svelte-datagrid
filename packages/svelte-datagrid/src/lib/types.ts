@@ -38,7 +38,7 @@ interface CustomCellComponentProps<T> {
 	row: T;
 }
 
-export type CustomCellComponentEvents<T> = {
+type CustomCellComponentEvents<T> = {
 	/**
 	 * Event triggered when the value of a cell is updated by the user
 	 */
