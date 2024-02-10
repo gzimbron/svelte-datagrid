@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.0.3
+
+### Patch Changes
+
+- 113433a: Fix on:valueUpdated returns very first value on column prop
+
 ## 0.0.2
 
 ### Patch Changes
