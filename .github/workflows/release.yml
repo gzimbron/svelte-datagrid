@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: "18.x"
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -42,3 +42,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Build
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        env:
+          BASE_PATH: "/${{ github.event.repository.name }}"
+        run: pnpm build
+
+      - name: Upload Artifacts
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "apps/website/build/"
+
+  deploy:
+    if: ${{ needs.release.outputs.hasChangesets == 'true' }}
+    name: Deploy
+    needs: release
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v2
