@@ -75,6 +75,9 @@
 		"url": "git+https://github.com/gzimbron/svelte-datagrid.git"
 	},
 	"homepage": "https://gzimbron.github.io/svelte-datagrid/",
+	"bugs": {
+		"url": "https://github.com/gzimbron/svelte-datagrid/issues"
+	},
 	"keywords": [
 		"svelte",
 		"grid",
