@@ -1,5 +1,11 @@
 # website
 
+## 0.0.4
+
+### Patch Changes
+
+- cc21a5d: Test deploy CD
+
 ## 0.0.3
 
 ### Patch Changes
