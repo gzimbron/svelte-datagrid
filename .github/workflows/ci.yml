@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
@@ -14,7 +12,6 @@ jobs:
   Quality:
     runs-on: ubuntu-latest
     name: Lint
-    if: ${{ !(github.event_name == 'push' && github.event.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '::NO_CI::')) }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,102 +1,26 @@
 {
-	"name": "@gzim/svelte-datagrid",
-	"version": "0.0.2",
-	"license": "MIT",
-	"publishConfig": {
-		"access": "public"
-	},
+	"private": true,
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync",
-		"package": "svelte-kit sync && svelte-package && publint",
-		"prepublishOnly": "npm run package",
-		"test": "npm run test:integration && npm run test:unit",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check . && eslint .",
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"test:unit": "turbo run test:unit",
 		"format": "prettier --write .",
-		"test:integration": "playwright test",
-		"test:unit": "vitest",
-		"release": "changeset publish",
-		"changeset": "changeset"
-	},
-	"exports": {
-		"./package.json": "./package.json",
-		".": {
-			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
-		},
-		"./types": {
-			"types": "./dist/types.d.ts",
-			"default": "./dist/types.js"
-		}
-	},
-	"files": [
-		"dist",
-		"!dist/sitecomponents/**",
-		"!dist/**/*.test.*",
-		"!dist/**/*.spec.*"
-	],
-	"typesVersions": {
-		">4.0": {
-			"index.d.ts": [
-				"./index.d.ts"
-			],
-			"types": [
-				"./types.d.ts"
-			]
-		}
-	},
-	"peerDependencies": {
-		"svelte": "^3.1.0 || ^4.0.0"
+		"package": "turbo run package",
+		"release": "changeset publish"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.27.1",
-		"@playwright/test": "^1.28.1",
-		"@sveltejs/adapter-static": "3.0.1",
-		"@sveltejs/kit": "^2.0.0",
-		"@sveltejs/package": "^2.0.0",
-		"@sveltejs/vite-plugin-svelte": "^3.0.0",
-		"@types/eslint": "8.56.0",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"autoprefixer": "^10.4.16",
+		"@mycustom/eslint-config": "workspace:*",
 		"eslint": "^8.56.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-svelte": "^2.35.1",
-		"postcss": "^8.4.32",
-		"postcss-load-config": "^5.0.2",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
-		"publint": "^0.1.9",
-		"svelte": "^4.2.7",
-		"svelte-check": "^3.6.0",
-		"tailwindcss": "^3.3.6",
-		"tslib": "^2.4.1",
-		"typescript": "^5.0.0",
-		"vite": "^5.0.11",
-		"vitest": "^1.2.0"
+		"turbo": "latest"
 	},
-	"svelte": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"type": "module",
-	"author": {
-		"name": "Gustavo Zimbrón",
-		"email": "gustavo@zimbron.dev",
-		"url": "https://zimbron.dev"
+	"packageManager": "pnpm@8.9.0",
+	"engines": {
+		"node": ">=18"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/gzimbron/svelte-datagrid.git"
-	},
-	"homepage": "https://gzimbron.github.io/svelte-datagrid/",
-	"keywords": [
-		"svelte",
-		"grid",
-		"data-grid",
-		"table",
-		"data-table"
-	]
+	"dependencies": {
+		"@changesets/cli": "^2.27.1"
+	}
 }

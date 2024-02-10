@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../app.pcss';
 	import Header from '$sitecomponent/Header.svelte';
 	import '../app.pcss';
 	import { SITE_DESCRIPTION, SITE_IMAGE, SITE_NAME, SITE_URL } from '../siteconfig.js';
