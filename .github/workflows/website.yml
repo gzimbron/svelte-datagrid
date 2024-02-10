@@ -2,16 +2,19 @@ name: Website
 
 on:
   workflow_run:
-    workflows: ['Release']
+    workflows: ["Release"]
     types:
       - completed
     branches:
       - main
+    paths:
+      - "apps/website/**"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   check-workflow-status:
+    if: ${{ (github.event_name == 'push' && github.event.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'changeset-release')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify Release status
@@ -38,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: "18.x"
           cache: pnpm
 
       - name: Install dependencies
@@ -46,14 +49,14 @@ jobs:
 
       - name: Build
         env:
-          BASE_PATH: '/${{ github.event.repository.name }}'
+          BASE_PATH: "/${{ github.event.repository.name }}"
         run: pnpm build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v2
         with:
           # this should match the `pages` option in your adapter-static options
-          path: 'build/'
+          path: "apps/website/build/"
   deploy:
     name: Deploy
     needs: build_site

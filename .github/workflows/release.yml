@@ -1,28 +1,15 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
     branches:
       - main
+      - next
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  check-workflow-status:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify CI status
-        run: |
-          workflow_status=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }} | jq -r .conclusion)
-          if [ "$workflow_status" != "success" ]; then
-            echo "CI failed, not deploying"
-            exit 1
-          fi
   release:
-    needs: check-workflow-status
     permissions:
       contents: write
       pull-requests: write
