@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.1.1
+
+### Patch Changes
+
+- 7bb870e: Fix: Update virtual list value on updated cell
+
 ## 0.1.0
 
 ### Minor Changes
