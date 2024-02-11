@@ -13,6 +13,7 @@
 	// eslint-disable-next-line no-undef
 	export let column: GridColumn<T>;
 	export let rowIndex: number;
+	export let virtualRowIndex: number;
 
 	let checkbox: HTMLInputElement;
 
@@ -21,7 +22,8 @@
 			row,
 			column,
 			value: checkbox.checked,
-			rowIndex
+			rowIndex,
+			virtualRowIndex
 		});
 	};
 </script>
