@@ -31,26 +31,30 @@
 		{
 			label: 'Name',
 			dataKey: 'name',
-			width: 300,
-			cellComponent: TextboxCell
+			width: 230,
+			cellComponent: TextboxCell,
+			draggable: true
 		},
 		{
 			label: 'Married',
 			dataKey: 'married',
 			width: 100,
-			cellComponent: CheckboxCell
+			cellComponent: CheckboxCell,
+			draggable: true
 		},
 		{
 			label: 'English Level',
 			dataKey: 'englishLevel',
-			width: 200,
+			width: 150,
 			options: nivelIngles,
-			cellComponent: SelectCell
+			cellComponent: SelectCell,
+			draggable: true
 		},
 		{
 			label: 'Age',
 			dataKey: 'age',
-			width: 150
+			width: 150,
+			draggable: true
 		}
 	];
 
@@ -104,6 +108,7 @@
 		bind:rowHeight
 		on:valueUpdated={onValueUpdated}
 		on:scroll={gridScrolled}
+		on:columnsSwapped={({ detail }) => console.log(detail)}
 	/>
 </section>
 <Progressbar {progress}></Progressbar>

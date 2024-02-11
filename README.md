@@ -21,8 +21,9 @@ It's based on the excellent (but deprecated) [svelte-data-grid](https://github.c
 ## TODO
 
 - [x] Demo website
-- [ ] Re-ordering columns
+- [x] Re-ordering columns
 - [ ] Resizing columns
+- [ ] Feel free to suggest more features or contribute to the project
 
 ## Usage:
 
@@ -239,12 +240,18 @@ Header components can also be specified in `columns` entries as the `headerCompo
 </style>
 ```
 
-## Options:
+## Properties:
 
 Datagrid provides a few options for controlling the grid and its interactions:
 
+### Configurations
+
 - `rowHeight` - The row height in pixels _(Default: 24)_
 - `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
+- `allColumnsDraggable` - Set all columns draggable by default, ignoring the `draggable` property of each column _(Default: false)_
+
+### Styling
+
 - `--border` Css: Custom style for grid borders _(Default: 1px)_
 - `--header-border` Custom width for header row border bottom _(Default: 2px)_
 - `--header-border-color` Custom color for header row border bottom _(Default: black)_
@@ -256,11 +263,16 @@ Datagrid provides a few options for controlling the grid and its interactions:
 - `--cell-color` Custom color for body cells text
 - `--textbox-cell-color` Custom color for textbox cells text
 - `--select-cell-color` Custom color for select cells text
+- `--no-draggable-opacity` Opacity for NOT draggable columns content when dragging. _(Default: 0.4)_
+- `--no-draggable-fg` CSS color for NOT draggable columns when dragging, this color is used to create an overlay over the column _(Default: 0.4)_
+- `--draggable-bg` CSS Hover color for draggable columns. _(Default: 0.4)_
+- `--dragging-bg` CSS Background color for actual dragging column. _(Default: 0.4)_
 
 ## Events:
 
 - `scroll` - Triggered when the grid is scrolled. The scroll percent position can be accessed from `event.detail`
 - `valueUpdated` - Triggered when a cell's value is updated. The updated value can be accessed from `event.value`, other data can be accessed from `event.row`, `event.column` and `event.rowIndex`
+- `columnsSwapped` - Triggered when columns are swapped. `event.detail` contains `from`, `to` and new `columns` order properties
 
 ## Bugs? Suggestions?
 
