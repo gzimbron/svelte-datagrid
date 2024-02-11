@@ -8,7 +8,7 @@ It's based on the excellent (but deprecated) [svelte-data-grid](https://github.c
 
 ## Demo website
 
-[![Demo website](./assets/SvelteDataGrid-demo.webp)](https://gzimbron.github.io/svelte-datagrid)
+[![Demo website](./assets/demo-screenshot.webp)](https://gzimbron.github.io/svelte-datagrid)
 
 ## Features
 
