@@ -60,7 +60,7 @@
 	];
 
 	const generatePersons = (length: number): Person[] => {
-		return Array.from({ length }, (_) => {
+		return Array.from({ length }, () => {
 			return {
 				zodiac: faker.person.zodiacSign(),
 				firstName: faker.person.firstName(),

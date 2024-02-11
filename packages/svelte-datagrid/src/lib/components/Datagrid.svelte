@@ -14,6 +14,7 @@
 		scroll: number;
 		// eslint-disable-next-line no-undef
 		valueUpdated: GridCellUpdated<T>;
+		// eslint-disable-next-line no-undef
 		columnsSwapped: { from: GridColumn<T>; to: GridColumn<T>; columns: $$Props['columns'] };
 	};
 	const dispatch = createEventDispatcher<ComponentEventsList>();
