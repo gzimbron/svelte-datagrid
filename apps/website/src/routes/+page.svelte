@@ -3,13 +3,14 @@
 	import type { GridCellUpdated, GridColumn, GridColumnOption } from '@gzim/svelte-datagrid/types';
 	import Message from '$sitecomponent/Message.svelte';
 	import Progressbar from '$sitecomponent/Progressbar.svelte';
+	import { faker } from '@faker-js/faker';
 
 	let progress = 0;
 	interface Person {
-		id: string;
-		name: string;
+		zodiac: string;
+		firstName: string;
+		lastName: string;
 		married: boolean;
-		age: number;
 		englishLevel: string;
 	}
 
@@ -17,22 +18,28 @@
 		{ value: 'A1', label: 'A1' },
 		{ value: 'A2', label: 'A2' },
 		{ value: 'B1', label: 'B1' },
-		{ value: 'B2', label: () => 'Super B2' },
+		{ value: 'B2', label: 'B2' },
 		{ value: 'C1', label: 'C1' },
 		{ value: 'C2', label: 'C2' }
 	];
 
 	const columns: GridColumn<Person>[] = [
 		{
-			label: 'ID',
-			dataKey: 'id',
+			label: 'Zodiac',
+			dataKey: 'zodiac',
 			width: 100
 		},
 		{
-			label: 'Name',
-			dataKey: 'name',
-			width: 230,
+			label: 'First Name',
+			dataKey: 'firstName',
+			width: 200,
 			cellComponent: TextboxCell,
+			draggable: true
+		},
+		{
+			label: 'Last Name',
+			dataKey: 'lastName',
+			width: 200,
 			draggable: true
 		},
 		{
@@ -49,23 +56,15 @@
 			options: nivelIngles,
 			cellComponent: SelectCell,
 			draggable: true
-		},
-		{
-			label: 'Age',
-			dataKey: 'age',
-			width: 150,
-			draggable: true
 		}
 	];
 
-	const generatePersons = (length: number, startFrom = 0): Person[] => {
-		return Array.from({ length }, (_, i) => {
-			const randomUUID = `U${startFrom + i + 1}`;
-			const randomName = `Super Cool Name ${randomUUID}`;
+	const generatePersons = (length: number): Person[] => {
+		return Array.from({ length }, (_) => {
 			return {
-				id: randomUUID,
-				name: randomName,
-				age: Math.ceil(Math.random() * 55),
+				zodiac: faker.person.zodiacSign(),
+				firstName: faker.person.firstName(),
+				lastName: faker.person.lastName(),
 				married: Math.random() > 0.5,
 				englishLevel: nivelIngles[Math.floor(Math.random() * nivelIngles.length)].value
 			};
@@ -75,7 +74,7 @@
 	let rows = generatePersons(200);
 
 	const addRows = (max = 50) => {
-		const newRows = generatePersons(max, rows.length);
+		const newRows = generatePersons(max);
 
 		rows = [...rows, ...newRows];
 	};
@@ -123,7 +122,7 @@
 		<button
 			class="btn btn-primary"
 			on:click={() => {
-				rows = [...rows, ...generatePersons(5000, rows.length)];
+				rows = [...rows, ...generatePersons(5000)];
 			}}
 		>
 			+ 5000 Rows
