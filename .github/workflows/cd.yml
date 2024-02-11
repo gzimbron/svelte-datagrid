@@ -1,4 +1,4 @@
-name: Release
+name: Continuous Delivery
 
 on:
   push:
@@ -10,10 +10,10 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
+    name: Changes and Release
     permissions:
       contents: write
       pull-requests: write
-    name: Release
     runs-on: ubuntu-latest
     outputs:
       published: ${{ steps.printoutputs.outputs.published }}
@@ -66,7 +66,7 @@ jobs:
 
   deploy:
     if: ${{ needs.release.outputs.published == 'true' }}
-    name: Deploy
+    name: Website Deployment
     needs: release
     runs-on: ubuntu-latest
 
