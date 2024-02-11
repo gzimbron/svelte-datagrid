@@ -20,7 +20,7 @@ It's based on the excellent (but deprecated) [svelte-data-grid](https://github.c
 
 ## TODO
 
-- [ ] Demo website
+- [x] Demo website
 - [ ] Re-ordering columns
 - [ ] Resizing columns
 
