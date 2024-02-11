@@ -9,6 +9,7 @@ export type GridColumn<T> = {
 	headerComponent?: CustomHeaderComponent<T>;
 	cellComponent?: CustomCellComponent<T>;
 	options?: GridColumnOption[];
+	draggable?: boolean;
 };
 
 export type GridColumnOption = {
@@ -70,6 +71,11 @@ export interface GridProps<T> {
 	extraRows?: number;
 
 	/**
+	 * Set all columns draggable by default, ignoring the `draggable` property of each column
+	 */
+	allColumnsDraggable?: boolean;
+
+	/**
 	 * Css: Custom style for grid borders:
 	 * @default '1px solid #666'
 	 */
@@ -120,4 +126,24 @@ export interface GridProps<T> {
 	 * Custom color for select cells text
 	 */
 	'--select-cell-color'?: string;
+	/**
+	 * Opacity for NOT draggable columns content when dragging.
+	 * @default '0.4'
+	 */
+	'--no-draggable-opacity'?: string;
+	/**
+	 * CSS color for NOT draggable columns when dragging, this color is used to create an overlay over the column
+	 * @default 'rgba(66, 66, 66, 0.5)'
+	 */
+	'--no-draggable-fg'?: string;
+	/**
+	 * CSS Hover color for draggable columns.
+	 * @default 'rgba(33, 248, 255, 0.5)'
+	 */
+	'--draggable-bg'?: string;
+	/**
+	 * CSS Background color for actual dragging column.
+	 * @default 'rgba(33, 255, 151, 0.5)'
+	 */
+	'--dragging-bg'?: string;
 }

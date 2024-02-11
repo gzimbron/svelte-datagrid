@@ -26,15 +26,17 @@ interface CreateStateProps<T> {
 }
 
 class GridState<T> {
-	columnWidths: number[];
+	//columnWidths: number[];
 	gridSpaceWidth: number;
 
 	rowHeight: ReturnType<typeof createCustomState<number>>;
 	scrollTop: ReturnType<typeof createCustomState<number>>;
 	scrollLeft: ReturnType<typeof createCustomState<number>>;
 	totalRows: ReturnType<typeof createCustomState<number>>;
-	resizing: ReturnType<typeof createCustomState<boolean>>;
-	columnDragging: ReturnType<typeof createCustomState<boolean>>;
+
+	xPositions: ReturnType<typeof createCustomState<number[]>>;
+	columnWidth: ReturnType<typeof createCustomState<number[]>>;
+
 	visibleRowsIndexes: ReturnType<typeof createCustomState<{ start: number; end: number }>>;
 
 	activeRow: ReturnType<typeof createCustomState<number>>;
@@ -53,8 +55,13 @@ class GridState<T> {
 			this.#recalculateRowsInViewPort();
 			this.#updateVisibleRowsIndexes();
 		});
-		this.columnWidths = columns.map((column) => column.width || MIN_COLUMN_WIDTH);
-		this.gridSpaceWidth = this.columnWidths.reduce((acc, width) => acc + width, 0);
+
+		this.columnWidth = createCustomState<number[]>([]);
+		this.xPositions = createCustomState<number[]>([]);
+
+		this.recalculateColumnWidths(columns);
+
+		this.gridSpaceWidth = columns.reduce((acc, { width }) => acc + width, 0);
 		this.rowHeight = createCustomState(rowHeight, () => {
 			this.#recalculateRowsInViewPort();
 			this.#updateVisibleRowsIndexes();
@@ -69,37 +76,11 @@ class GridState<T> {
 
 		this.scrollTop = createCustomState(0);
 		this.scrollLeft = createCustomState(0);
-		this.resizing = createCustomState(false);
-		this.columnDragging = createCustomState(false);
 
 		setTimeout(() => {
 			this.#updateVisibleRowsIndexes();
 		}, 0);
 	}
-
-	getCellLeft = (columnIndex: number) => {
-		if (this.#affixedColumnsIndices.indexOf(columnIndex) >= 0) {
-			const actualScrollLeft = get(this.scrollLeft);
-
-			if (columnIndex === 0) {
-				return actualScrollLeft;
-			}
-
-			let left = actualScrollLeft;
-
-			for (let j = columnIndex - 1; j >= 0; j--) {
-				left += this.columnWidths[j];
-			}
-
-			return left;
-		}
-
-		let left = 0;
-		for (let j = 0; j < columnIndex; j++) {
-			left += this.columnWidths[j];
-		}
-		return left;
-	};
 
 	getCellZIndex = (columnIndex: number) => {
 		return this.#affixedColumnsIndices.indexOf(columnIndex) == -1 ? 1 : 2;
@@ -149,5 +130,42 @@ class GridState<T> {
 		} catch (error) {
 			console.log('error', wrapperHeight);
 		}
+	};
+
+	recalculateColumnWidths = (columns: GridColumn<T>[]) => {
+		this.columnWidth.set(columns.map((column) => column.width || MIN_COLUMN_WIDTH));
+
+		this.#updateXPositions();
+	};
+
+	#updateXPositions = () => {
+		const columnWidths = get(this.columnWidth);
+		this.xPositions.set(columnWidths.map((_, index) => this.#calculateXPosition(index)));
+	};
+
+	#calculateXPosition = (columnIndex: number) => {
+		const columnWidths = get(this.columnWidth);
+
+		if (this.#affixedColumnsIndices.indexOf(columnIndex) >= 0) {
+			const actualScrollLeft = get(this.scrollLeft);
+
+			if (columnIndex === 0) {
+				return actualScrollLeft;
+			}
+
+			let left = actualScrollLeft;
+
+			for (let j = columnIndex - 1; j >= 0; j--) {
+				left += columnWidths[j];
+			}
+
+			return left;
+		}
+
+		let left = 0;
+		for (let j = 0; j < columnIndex; j++) {
+			left += columnWidths[j];
+		}
+		return left;
 	};
 }
