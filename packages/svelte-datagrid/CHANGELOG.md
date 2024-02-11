@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.1.0
+
+### Minor Changes
+
+- f0925cf: Feat: Draggable columns added checkout de README.md to view all new properties and events
+
 ## 0.0.4
 
 ### Patch Changes
