@@ -18,6 +18,7 @@
 	// eslint-disable-next-line no-undef
 	export let column: GridColumn<T>;
 	export let rowIndex: number;
+	export let virtualRowIndex: number;
 
 	let textbox: HTMLInputElement;
 	// eslint-disable-next-line no-undef
@@ -43,7 +44,8 @@
 				row,
 				column,
 				value,
-				rowIndex
+				rowIndex,
+				virtualRowIndex
 			});
 		}, 0);
 	}

@@ -27,6 +27,7 @@ export type GridCellUpdated<T> = {
 	column: GridColumn<T>;
 	value: unknown;
 	rowIndex: number;
+	virtualRowIndex: number;
 };
 
 interface CustomHeaderComponentProps<T> {
@@ -35,6 +36,7 @@ interface CustomHeaderComponentProps<T> {
 
 interface CustomCellComponentProps<T> {
 	rowIndex: number;
+	virtualRowIndex: number;
 	column: GridColumn<T>;
 	row: T;
 }

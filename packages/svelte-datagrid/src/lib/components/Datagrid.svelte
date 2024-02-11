@@ -107,7 +107,8 @@
 	// eslint-disable-next-line no-undef
 	const valueUpdated = ({ detail }: CustomEvent<GridCellUpdated<T>>) => {
 		rows[detail.rowIndex] = { ...rows[detail.rowIndex], [detail.column.dataKey]: detail.value };
-		visibleRows[detail.rowIndex] = { i: detail.rowIndex, data: rows[detail.rowIndex] };
+		visibleRows[detail.virtualRowIndex].data = rows[detail.rowIndex];
+
 		dispatch('valueUpdated', detail);
 	};
 
@@ -229,7 +230,7 @@
 	>
 		<div class="grid-space"></div>
 
-		{#each visibleRows as row}
+		{#each visibleRows as row, virtualRowIndex}
 			<div class="grid-row" style:top="{getRowTop(row.i)}px" role="row" aria-rowindex={row.i}>
 				{#each columns as column, j (j)}
 					<div
@@ -248,6 +249,7 @@
 								<svelte:component
 									this={column.cellComponent}
 									rowIndex={row.i}
+									{virtualRowIndex}
 									{column}
 									row={row.data}
 									on:valueUpdated={valueUpdated}
