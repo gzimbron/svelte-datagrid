@@ -250,6 +250,31 @@ Datagrid provides a few options for controlling the grid and its interactions:
 - `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
 - `allColumnsDraggable` - Set all columns draggable by default, ignoring the `draggable` property of each column _(Default: false)_
 
+### Functions exported
+
+Yoy can bind to the following functions to control the grid:
+
+- `getGridState` - A function that returns the current grid state.
+
+```typescript
+const getGridState: () => {
+	visibleRowsIndexes: {
+		start: number;
+		end: number;
+	};
+	scrollTop: number;
+	scrollLeft: number;
+	yScrollPercent: number;
+	xScrollPercent: number;
+};
+```
+
+- `scrollToRow` - A function that scrolls the grid to a specific row index.
+
+```typescript
+const scrollToRow: (rowIndex: number) => void;
+```
+
 ### Styling
 
 - `--border` Css: Custom style for grid borders _(Default: 1px)_
@@ -270,7 +295,8 @@ Datagrid provides a few options for controlling the grid and its interactions:
 
 ## Events:
 
-- `scroll` - Triggered when the grid is scrolled. The scroll percent position can be accessed from `event.detail`
+- `scroll` - Triggered when the grid is scrolled on Y axis. The Y scroll percent position can be accessed from `event.detail`
+- `xScroll` - Triggered when the grid is scrolled on X axis. The X scroll percent position can be accessed from `event.detail`
 - `valueUpdated` - Triggered when a cell's value is updated. The updated value can be accessed from `event.value`, other data can be accessed from `event.row`, `event.column` and `event.rowIndex`
 - `columnsSwapped` - Triggered when columns are swapped. `event.detail` contains `from`, `to` and new `columns` order properties
 

@@ -1,17 +1,39 @@
 <script lang="ts" generics="T">
-	import { quadIn } from 'svelte/easing';
+	import { swapGridColums } from '$lib/functions/gridHelpers.js';
+
+	import { writable } from 'svelte/store';
+
+	import {
+		calculateGridSpaceWidth,
+		calculatePercent,
+		calculateXPositions,
+		getRowTop,
+		getVisibleRowsIndexes,
+		updateColumnWidths
+	} from '$lib/functions/calculateFunctions.js';
+
 	import { flip, type FlipParams } from 'svelte/animate';
+	import { quadIn } from 'svelte/easing';
 
 	import { dragAndDrop } from '$lib/actions/dragAndDrop.js';
-	import { createGridState } from '$lib/state/grid.state.js';
+
 	import type { GridCellUpdated, GridColumn, GridProps, GridRow } from '$lib/types.js';
-	import { beforeUpdate, createEventDispatcher } from 'svelte';
+	import { beforeUpdate, createEventDispatcher, setContext } from 'svelte';
 
 	// eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
-	interface $$Props extends GridProps<T> {}
+	interface $$Props extends GridProps<T> {
+		/**
+		 * Get the current grid state like visible rows indexes, scroll position, etc.
+		 */
+		getGridState?: typeof getGridState;
+		scrollToRow?: typeof scrollToRow;
+	}
+
+	setContext('activeRow', writable(-1));
 
 	type ComponentEventsList = {
 		scroll: number;
+		xScroll: number;
 		// eslint-disable-next-line no-undef
 		valueUpdated: GridCellUpdated<T>;
 		// eslint-disable-next-line no-undef
@@ -34,73 +56,79 @@
 		easing: quadIn
 	};
 
+	export const scrollToRow = (rowIndex: number) => {
+		if (!gridBody) return;
+		gridBody.scrollTo({
+			top: rowIndex * rowHeight,
+			behavior: 'smooth'
+		});
+	};
+
+	export const getGridState = () => {
+		return {
+			visibleRowsIndexes,
+			scrollTop,
+			scrollLeft,
+			yScrollPercent,
+			xScrollPercent
+		};
+	};
+
 	let svelteGridWrapper: HTMLDivElement;
 	let gridBody: HTMLDivElement;
 	let isResizing = false;
 	let isDragging = false;
 	let columnDragging = -1;
-	let gridHeight = 0;
-	// eslint-disable-next-line no-undef
-	let visibleRows: GridRow<T>[];
-	let scrolledPercent = 0;
-
-	let {
-		columnWidth,
-		gridSpaceWidth,
-		scrollTop,
-		scrollLeft,
-		visibleRowsIndexes,
-		xPositions,
-		getRowTop,
-		getCellZIndex,
-		setNewScrollPositions,
-		setGridHeight,
-		totalRows,
-		rowHeight: gridRowHeight,
-		recalculateColumnWidths
-	} = createGridState({
-		columns,
-		rowHeight,
-		extraRows,
-		totalRows: rows.length
-	});
+	let yScrollPercent = 0;
+	let xScrollPercent = 0;
 
 	beforeUpdate(() => {
 		if (rowHeight < MIN_ROW_HEIGHT) {
 			rowHeight = MIN_ROW_HEIGHT;
-		}
-
-		if ($totalRows != rows.length) {
-			totalRows.set(rows.length);
-			scrollToRefreshView();
-		}
-
-		if (rowHeight != $gridRowHeight) {
-			gridRowHeight.set(rowHeight);
-
-			updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
 			scrollToRefreshView();
 		}
 	});
 
-	$: gridSpaceHeight = $gridRowHeight * rows.length;
-	$: updateVisibleRows($visibleRowsIndexes.start, $visibleRowsIndexes.end);
-	$: setGridHeight(gridHeight);
+	let scrollTop = 0;
+	let scrollLeft = 0;
 
-	const scrollToRefreshView = () => {
-		gridBody.scrollTo({
-			top: $scrollTop - 1,
-			left: $scrollLeft - 1,
-			behavior: 'smooth'
-		});
-	};
-
-	const updateVisibleRows = (start: number, end: number) => {
-		visibleRows = rows.slice(start, end).map((x, i) => {
+	$: columnWidths = updateColumnWidths(columns);
+	$: gridSpaceWidth = calculateGridSpaceWidth(columnWidths);
+	$: xPositions = calculateXPositions(columnWidths);
+	$: totalRows = rows.length;
+	$: gridSpaceHeight = rowHeight * rows.length;
+	$: visibleRowsIndexes = getVisibleRowsIndexes(
+		rowHeight,
+		scrollTop,
+		gridBody?.clientHeight,
+		totalRows,
+		extraRows
+	);
+	$: visibleRows = rows
+		.slice(visibleRowsIndexes.start, visibleRowsIndexes.end)
+		// eslint-disable-next-line no-undef
+		.map((x, i): GridRow<T> => {
 			return {
-				i: i + start,
+				i: i + visibleRowsIndexes.start,
 				data: x
 			};
+		});
+
+	$: {
+		if (totalRows) {
+			scrollToRefreshView();
+		}
+		if (rowHeight) {
+			onScroll();
+			scrollToRefreshView();
+		}
+	}
+
+	const scrollToRefreshView = () => {
+		if (!gridBody) return;
+		gridBody.scrollTo({
+			top: scrollTop - 1,
+			behavior: 'smooth'
 		});
 	};
 
@@ -112,18 +140,24 @@
 		dispatch('valueUpdated', detail);
 	};
 
-	const updateScrollPercent = () => {
+	const onScroll = () => {
 		if (!gridBody) return;
 
-		const percent = Math.round(
-			(gridBody.scrollTop / (gridBody.scrollHeight - gridBody.clientHeight)) * 100
-		);
+		scrollTop = gridBody.scrollTop;
+		scrollLeft = gridBody.scrollLeft;
 
-		setNewScrollPositions(gridBody.scrollTop, gridBody.scrollLeft);
+		const percentY = calculatePercent(scrollTop, gridBody.scrollHeight - gridBody.clientHeight);
+		const percentX = calculatePercent(scrollLeft, gridSpaceWidth - gridBody.clientWidth);
 
-		if (scrolledPercent === percent) return;
-		scrolledPercent = percent;
-		dispatch('scroll', scrolledPercent);
+		if (percentX != xScrollPercent && percentX >= 0 && percentX <= 100) {
+			xScrollPercent = percentX;
+			dispatch('xScroll', xScrollPercent);
+		}
+
+		if (percentY != yScrollPercent && percentY >= 0 && percentY <= 100) {
+			yScrollPercent = percentY;
+			dispatch('scroll', yScrollPercent);
+		}
 	};
 
 	const resetDraggind = () => {
@@ -132,31 +166,20 @@
 	};
 
 	const swapColumns = (fromColumn: number, toColumn: number) => {
-		const from = columns[fromColumn];
-		const to = columns[toColumn];
-		columns[fromColumn] = to;
-		columns[toColumn] = from;
+		const detail = swapGridColums(columns, fromColumn, toColumn);
 
-		recalculateColumnWidths(columns);
-
-		dispatch('columnsSwapped', {
-			from,
-			to,
-			columns
-		});
+		columns = [...detail.columns];
+		dispatch('columnsSwapped', detail);
 	};
 </script>
 
 <div
 	bind:this={svelteGridWrapper}
-	bind:offsetHeight={gridHeight}
 	role="table"
 	class="svelte-grid"
-	style:--row-height="{$gridRowHeight}px"
+	style:--row-height="{rowHeight}px"
 	style:--grid-space-width="{gridSpaceWidth}px"
 	style:--grid-space-height="{gridSpaceHeight}px"
-	style:--top-scroll="{$scrollTop}px"
-	style:--left-scroll="{$scrollLeft}px"
 	class:resizing={isResizing || isDragging}
 	class:isDragging
 >
@@ -168,9 +191,8 @@
 					class="columnheader grid-cell"
 					title={column.label || ''}
 					role="columnheader"
-					style:z-index={getCellZIndex(i)}
-					style:left="{$xPositions[i]}px"
-					style:width="{$columnWidth[i]}px"
+					style:left="{xPositions[i]}px"
+					style:width="{columnWidths[i]}px"
 					class:draggable={allColumnsDraggable || column.draggable}
 					class:dragging={false}
 					animate:flip={animationParams}
@@ -222,25 +244,24 @@
 		</div>
 	</div>
 
-	<div
-		role="rowgroup"
-		class="svelte-grid-body"
-		bind:this={gridBody}
-		on:scroll={updateScrollPercent}
-	>
+	<div role="rowgroup" class="svelte-grid-body" bind:this={gridBody} on:scroll={onScroll}>
 		<div class="grid-space"></div>
 
 		{#each visibleRows as row, virtualRowIndex}
-			<div class="grid-row" style:top="{getRowTop(row.i)}px" role="row" aria-rowindex={row.i}>
+			<div
+				class="grid-row"
+				style:top="{getRowTop(row.i, rowHeight)}px"
+				role="row"
+				aria-rowindex={row.i}
+			>
 				{#each columns as column, j (j)}
 					<div
 						class="grid-cell"
 						role="cell"
 						data-column={j}
 						data-row={row.i}
-						style="width:{$columnWidth[j]}px"
-						style:z-index={getCellZIndex(j)}
-						style:left="{$xPositions[j]}px"
+						style="width:{columnWidths[j]}px"
+						style:left="{xPositions[j]}px"
 						class:draggableColumnCell={allColumnsDraggable || column.draggable}
 						animate:flip={animationParams}
 					>
@@ -366,7 +387,7 @@
 		flex-direction: row;
 		position: relative;
 		top: 0;
-		left: calc(var(--left-scroll) * -1);
+		left: 0;
 	}
 
 	.columnheader .cell-default {
