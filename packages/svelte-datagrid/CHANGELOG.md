@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.2.1
+
+### Patch Changes
+
+- 44772c4: Added property --min-height
+
 ## 0.2.0
 
 ### Minor Changes
