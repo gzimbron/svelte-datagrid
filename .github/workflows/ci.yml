@@ -48,5 +48,5 @@ jobs:
       - name: Linter
         run: pnpm lint
 
-      - name: Unit Tests
-        run: pnpm test:unit
+      - name: Tests
+        run: pnpm test

@@ -4,7 +4,7 @@
 		"build": "turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
-		"test:unit": "turbo run test:unit",
+		"test": "turbo run test",
 		"format": "prettier --write .",
 		"package": "turbo run package",
 		"release": "changeset publish"

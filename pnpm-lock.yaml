@@ -130,9 +130,6 @@ importers:
       '@mycustom/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@playwright/test':
-        specifier: ^1.28.1
-        version: 1.41.2
       '@sveltejs/adapter-auto':
         specifier: ^3.1.1
         version: 3.1.1(@sveltejs/kit@2.5.0)
@@ -754,14 +751,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@playwright/test@1.41.2:
-    resolution: {integrity: sha512-qQB9h7KbibJzrDpkXkYvsmiDJK14FULCCZgEcoe2AvFAS64oCirWTwzTlAYEbKaRxWs5TFesE1Na6izMv3HfGg==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      playwright: 1.41.2
-    dev: true
 
   /@polka/url@1.0.0-next.24:
     resolution: {integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==}
@@ -2245,14 +2234,6 @@ packages:
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
-  /fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -3332,22 +3313,6 @@ packages:
       jsonc-parser: 3.2.1
       mlly: 1.5.0
       pathe: 1.1.2
-    dev: true
-
-  /playwright-core@1.41.2:
-    resolution: {integrity: sha512-VaTvwCA4Y8kxEe+kfm2+uUUw5Lubf38RxF7FpBxLPmGe5sdNkSg5e3ChEigaGrX7qdqT3pt2m/98LiyvU2x6CA==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: true
-
-  /playwright@1.41.2:
-    resolution: {integrity: sha512-v0bOa6H2GJChDL8pAeLa/LZC4feoAMbSQm1/jF/ySsWWoaNItvrMP7GEkvEEFyCTUYKMxjQKaTSg5up7nR6/8A==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      playwright-core: 1.41.2
-    optionalDependencies:
-      fsevents: 2.3.2
     dev: true
 
   /postcss-import@15.1.0(postcss@8.4.35):
