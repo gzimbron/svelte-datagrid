@@ -1,5 +1,16 @@
 # @gzim/svelte-datagrid
 
+## 0.2.0
+
+### Minor Changes
+
+- a17d5be: Feat: Add on:xScroll event
+- a17d5be: Feat: Export scrollToRow, getGridState functions
+
+### Patch Changes
+
+- a17d5be: Refactor: Replace state class to localreactive variables
+
 ## 0.1.1
 
 ### Patch Changes
