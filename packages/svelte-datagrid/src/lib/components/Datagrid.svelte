@@ -5,15 +5,15 @@
 
 	import {
 		calculateGridSpaceWidth,
+		calculatePercent,
 		calculateXPositions,
-		calculateYscroll,
 		getRowTop,
 		getVisibleRowsIndexes,
 		updateColumnWidths
 	} from '$lib/functions/calculateFunctions.js';
 
-	import { quadIn } from 'svelte/easing';
 	import { flip, type FlipParams } from 'svelte/animate';
+	import { quadIn } from 'svelte/easing';
 
 	import { dragAndDrop } from '$lib/actions/dragAndDrop.js';
 
@@ -27,6 +27,7 @@
 
 	type ComponentEventsList = {
 		scroll: number;
+		xScroll: number;
 		// eslint-disable-next-line no-undef
 		valueUpdated: GridCellUpdated<T>;
 		// eslint-disable-next-line no-undef
@@ -54,8 +55,8 @@
 	let isResizing = false;
 	let isDragging = false;
 	let columnDragging = -1;
-	let gridHeight = 0;
 	let yScrollPercent = 0;
+	let xScrollPercent = 0;
 
 	beforeUpdate(() => {
 		if (rowHeight < MIN_ROW_HEIGHT) {
@@ -65,6 +66,7 @@
 	});
 
 	let scrollTop = 0;
+	let scrollLeft = 0;
 
 	$: columnWidths = updateColumnWidths(columns);
 	$: gridSpaceWidth = calculateGridSpaceWidth(columnWidths);
@@ -74,7 +76,7 @@
 	$: visibleRowsIndexes = getVisibleRowsIndexes(
 		rowHeight,
 		scrollTop,
-		gridHeight,
+		gridBody?.clientHeight,
 		totalRows,
 		extraRows
 	);
@@ -118,12 +120,20 @@
 		if (!gridBody) return;
 
 		scrollTop = gridBody.scrollTop;
+		scrollLeft = gridBody.scrollLeft;
 
-		const percent = calculateYscroll(scrollTop, gridBody.scrollHeight, gridBody.clientHeight);
+		const percentY = calculatePercent(scrollTop, gridBody.scrollHeight - gridBody.clientHeight);
+		const percentX = calculatePercent(scrollLeft, gridSpaceWidth - gridBody.clientWidth);
 
-		if (yScrollPercent === percent || percent < 0 || percent > 100) return;
-		yScrollPercent = percent;
-		dispatch('scroll', yScrollPercent);
+		if (percentX != xScrollPercent && percentX >= 0 && percentX <= 100) {
+			xScrollPercent = percentX;
+			dispatch('xScroll', xScrollPercent);
+		}
+
+		if (percentY != yScrollPercent && percentY >= 0 && percentY <= 100) {
+			yScrollPercent = percentY;
+			dispatch('scroll', yScrollPercent);
+		}
 	};
 
 	const resetDraggind = () => {
@@ -141,7 +151,6 @@
 
 <div
 	bind:this={svelteGridWrapper}
-	bind:offsetHeight={gridHeight}
 	role="table"
 	class="svelte-grid"
 	style:--row-height="{rowHeight}px"

@@ -270,7 +270,8 @@ Datagrid provides a few options for controlling the grid and its interactions:
 
 ## Events:
 
-- `scroll` - Triggered when the grid is scrolled. The scroll percent position can be accessed from `event.detail`
+- `scroll` - Triggered when the grid is scrolled on Y axis. The Y scroll percent position can be accessed from `event.detail`
+- `xScroll` - Triggered when the grid is scrolled on X axis. The X scroll percent position can be accessed from `event.detail`
 - `valueUpdated` - Triggered when a cell's value is updated. The updated value can be accessed from `event.value`, other data can be accessed from `event.row`, `event.column` and `event.rowIndex`
 - `columnsSwapped` - Triggered when columns are swapped. `event.detail` contains `from`, `to` and new `columns` order properties
 

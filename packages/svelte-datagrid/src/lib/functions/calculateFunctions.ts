@@ -37,6 +37,6 @@ export function getRowTop(rowIndex: number, rowHeight: number) {
 	return rowIndex * rowHeight;
 }
 
-export function calculateYscroll(scrollTop: number, scrollHeight: number, clientHeight: number) {
-	return Math.round((scrollTop / (scrollHeight - clientHeight)) * 100);
+export function calculatePercent(actual: number, total: number) {
+	return Math.round((actual / total) * 100);
 }
