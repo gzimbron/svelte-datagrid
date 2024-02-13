@@ -146,8 +146,8 @@
 
 	<p>
 		<label for="rowheight">
-			Row Height:
-			<input class="input" type="number" id="rowheight" bind:value={rowHeight} />
+			<p>Row Height: {rowHeight}</p>
+			<input type="range" min={20} max={50} step={1} id="rowheight" bind:value={rowHeight} />
 		</label>
 	</p>
 </section>
