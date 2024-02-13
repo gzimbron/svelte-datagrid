@@ -14,9 +14,6 @@ describe('swapGridColums', () => {
 
 		const result = swapGridColums(columns, fromColumn, toColumn);
 
-		console.log(result.columns[toColumn]);
-		console.log(columns[fromColumn]);
-
 		expect(result.columns[toColumn]).toEqual(columns[fromColumn]);
 		expect(result.columns[fromColumn]).toEqual(columns[toColumn]);
 
