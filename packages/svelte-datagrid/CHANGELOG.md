@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.2.2
+
+### Patch Changes
+
+- bfc05c9: Fix Head row scroll
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # website
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies [bfc05c9]
+  - @gzim/svelte-datagrid@0.2.2
+
 ## 0.0.10
 
 ### Patch Changes
