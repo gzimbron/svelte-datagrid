@@ -193,7 +193,7 @@
 	class:isDragging
 >
 	<div class="svelte-grid-head" role="rowgroup">
-		<div role="row" class="header-row">
+		<div role="row" class="header-row" style:left="{scrollLeft * -1}px">
 			{#each columns as column, i (i)}
 				<div
 					tabindex={i}
@@ -201,8 +201,8 @@
 					class="columnheader grid-cell"
 					title={column.label || ''}
 					role="columnheader"
-					style:left="{xPositions[i]}px"
 					style:width="{columnWidths[i]}px"
+					style:left="{xPositions[i]}px"
 					class:draggable={allColumnsDraggable || column.draggable}
 					class:dragging={false}
 					animate:flip={animationParams}
@@ -398,7 +398,6 @@
 		flex-direction: row;
 		position: relative;
 		top: 0;
-		left: 0;
 	}
 
 	.columnheader .cell-default {
