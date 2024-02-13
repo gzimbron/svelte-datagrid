@@ -2,4 +2,4 @@
 "@gzim/svelte-datagrid": patch
 ---
 
-Fix Header row scroll
+Fix Head row scroll
