@@ -1,5 +1,11 @@
 # website
 
+## 0.0.9
+
+### Patch Changes
+
+- db0eed1: Replace Row Height control from input text to input range
+
 ## 0.0.8
 
 ### Patch Changes
