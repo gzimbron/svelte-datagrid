@@ -1,8 +1,8 @@
 <script lang="ts" generics="T">
-	import { getGridState } from '$lib/state/grid.state.js';
+	import type { Writable } from 'svelte/store';
 
 	import type { GridCellUpdated, GridColumn } from '$lib/types.js';
-	import { afterUpdate, beforeUpdate, createEventDispatcher } from 'svelte';
+	import { afterUpdate, beforeUpdate, createEventDispatcher, getContext } from 'svelte';
 
 	type ComponentEventsList = {
 		// eslint-disable-next-line no-undef
@@ -11,7 +11,7 @@
 
 	const dispatch = createEventDispatcher<ComponentEventsList>();
 
-	const { activeRow } = getGridState();
+	const activeRow = getContext('activeRow') as Writable<number>;
 
 	// eslint-disable-next-line no-undef
 	export let row: T;
