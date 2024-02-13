@@ -65,7 +65,6 @@
 	});
 
 	let scrollTop = 0;
-	let scrollLeft = 0;
 
 	$: columnWidths = updateColumnWidths(columns);
 	$: gridSpaceWidth = calculateGridSpaceWidth(columnWidths);
@@ -81,6 +80,7 @@
 	);
 	$: visibleRows = rows
 		.slice(visibleRowsIndexes.start, visibleRowsIndexes.end)
+		// eslint-disable-next-line no-undef
 		.map((x, i): GridRow<T> => {
 			return {
 				i: i + visibleRowsIndexes.start,
@@ -118,7 +118,6 @@
 		if (!gridBody) return;
 
 		scrollTop = gridBody.scrollTop;
-		scrollLeft = gridBody.scrollLeft;
 
 		const percent = calculateYscroll(scrollTop, gridBody.scrollHeight, gridBody.clientHeight);
 
