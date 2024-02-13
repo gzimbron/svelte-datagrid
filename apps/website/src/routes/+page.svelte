@@ -98,10 +98,15 @@
 			addRows(50);
 		}
 	};
+
+	let getGridState: () => any | undefined;
+	let scrollToRow: (index: number) => void | undefined;
 </script>
 
 <section class="grid-cointainer">
 	<Datagrid
+		bind:getGridState
+		bind:scrollToRow
 		{columns}
 		bind:rows
 		bind:rowHeight
@@ -126,6 +131,15 @@
 			}}
 		>
 			+ 5000 Rows
+		</button>
+		<button
+			class="btn btn-primary"
+			on:click={() => {
+				if (!getGridState) return;
+				console.log(getGridState());
+			}}
+		>
+			🖨️ Grid State
 		</button>
 	</div>
 

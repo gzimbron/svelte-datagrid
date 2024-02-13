@@ -250,6 +250,31 @@ Datagrid provides a few options for controlling the grid and its interactions:
 - `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
 - `allColumnsDraggable` - Set all columns draggable by default, ignoring the `draggable` property of each column _(Default: false)_
 
+### Functions exported
+
+Yoy can bind to the following functions to control the grid:
+
+- `getGridState` - A function that returns the current grid state.
+
+```typescript
+const getGridState: () => {
+	visibleRowsIndexes: {
+		start: number;
+		end: number;
+	};
+	scrollTop: number;
+	scrollLeft: number;
+	yScrollPercent: number;
+	xScrollPercent: number;
+};
+```
+
+- `scrollToRow` - A function that scrolls the grid to a specific row index.
+
+```typescript
+const scrollToRow: (rowIndex: number) => void;
+```
+
 ### Styling
 
 - `--border` Css: Custom style for grid borders _(Default: 1px)_

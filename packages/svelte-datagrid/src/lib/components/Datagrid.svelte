@@ -21,7 +21,13 @@
 	import { beforeUpdate, createEventDispatcher, setContext } from 'svelte';
 
 	// eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
-	interface $$Props extends GridProps<T> {}
+	interface $$Props extends GridProps<T> {
+		/**
+		 * Get the current grid state like visible rows indexes, scroll position, etc.
+		 */
+		getGridState?: typeof getGridState;
+		scrollToRow?: typeof scrollToRow;
+	}
 
 	setContext('activeRow', writable(-1));
 
@@ -48,6 +54,24 @@
 		duration: 150,
 		delay: 0,
 		easing: quadIn
+	};
+
+	export const scrollToRow = (rowIndex: number) => {
+		if (!gridBody) return;
+		gridBody.scrollTo({
+			top: rowIndex * rowHeight,
+			behavior: 'smooth'
+		});
+	};
+
+	export const getGridState = () => {
+		return {
+			visibleRowsIndexes,
+			scrollTop,
+			scrollLeft,
+			yScrollPercent,
+			xScrollPercent
+		};
 	};
 
 	let svelteGridWrapper: HTMLDivElement;
