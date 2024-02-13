@@ -289,9 +289,10 @@ const scrollToRow: (rowIndex: number) => void;
 - `--textbox-cell-color` Custom color for textbox cells text
 - `--select-cell-color` Custom color for select cells text
 - `--no-draggable-opacity` Opacity for NOT draggable columns content when dragging. _(Default: 0.4)_
-- `--no-draggable-fg` CSS color for NOT draggable columns when dragging, this color is used to create an overlay over the column _(Default: 0.4)_
-- `--draggable-bg` CSS Hover color for draggable columns. _(Default: 0.4)_
-- `--dragging-bg` CSS Background color for actual dragging column. _(Default: 0.4)_
+- `--no-draggable-fg` CSS color for NOT draggable columns when dragging, this color is used to create an overlay over the column _(Default: rgba(66, 66, 66, 0.5))_
+- `--draggable-bg` CSS Hover color for draggable columns. _(Default: rgba(33, 248, 255, 0.5))_
+- `--dragging-bg` CSS Background color for actual dragging column. _(Default: rgba(33, 255, 151, 0.5))_
+- `--grid-height` Min height for the grid container _(@default RowHeight \* 6)_
 
 ## Events:
 
