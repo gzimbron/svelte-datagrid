@@ -1,12 +1,11 @@
 import type { GridColumn } from '$lib/types.js';
 
 export function swapGridColums<T>(columns: GridColumn<T>[], fromColumn: number, toColumn: number) {
-	const from = columns[fromColumn];
-	const to = columns[toColumn];
-	columns[fromColumn] = to;
-	columns[toColumn] = from;
+	const columnsCopy = [...columns];
+	const from = columnsCopy[fromColumn];
+	const to = columnsCopy[toColumn];
+	columnsCopy[fromColumn] = to;
+	columnsCopy[toColumn] = from;
 
-	columns = [...columns];
-
-	return { from, to, columns };
+	return { from, to, columns: [...columnsCopy] };
 }

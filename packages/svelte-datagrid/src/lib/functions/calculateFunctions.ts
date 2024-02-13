@@ -1,6 +1,6 @@
 import type { GridColumn } from '$lib/types.js';
 
-const MIN_COLUMN_WIDTH = 20;
+export const MIN_COLUMN_WIDTH = 20;
 
 export function updateColumnWidths<T>(columns: GridColumn<T>[]) {
 	return columns.map((column) => column.width || MIN_COLUMN_WIDTH);
@@ -9,7 +9,7 @@ export function updateColumnWidths<T>(columns: GridColumn<T>[]) {
 export function calculateXPositions(columnWidths: number[]) {
 	const xPositions = [0];
 	let x = 0;
-	for (let i = 0; i < columnWidths.length; i++) {
+	for (let i = 0; i < columnWidths.length - 1; i++) {
 		x += columnWidths[i];
 		xPositions.push(x);
 	}
@@ -29,7 +29,7 @@ export function getVisibleRowsIndexes(
 ) {
 	//console.log({ rowHeight, scrollTop, wrapperHeight, totalRows, extraRows });
 	const start = Math.floor(scrollTop / rowHeight);
-	const end = Math.min(totalRows + extraRows, start + Math.ceil(wrapperHeight / rowHeight));
+	const end = Math.min(Math.ceil((scrollTop + wrapperHeight) / rowHeight) + extraRows, totalRows);
 	return { start, end };
 }
 

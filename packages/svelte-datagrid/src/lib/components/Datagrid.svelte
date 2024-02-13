@@ -56,6 +56,14 @@
 		easing: quadIn
 	};
 
+	if (!columns || columns.length < 1) {
+		throw new Error('Columns are required');
+	}
+
+	if (!rows) {
+		throw new Error('Rows are required');
+	}
+
 	export const scrollToRow = (rowIndex: number) => {
 		if (!gridBody) return;
 		gridBody.scrollTo({
@@ -180,6 +188,7 @@
 	style:--row-height="{rowHeight}px"
 	style:--grid-space-width="{gridSpaceWidth}px"
 	style:--grid-space-height="{gridSpaceHeight}px"
+	style:--min-rows={rows.length > 5 ? 5 : rows.length}
 	class:resizing={isResizing || isDragging}
 	class:isDragging
 >
@@ -188,6 +197,7 @@
 			{#each columns as column, i (i)}
 				<div
 					tabindex={i}
+					data-testid="columnheader"
 					class="columnheader grid-cell"
 					title={column.label || ''}
 					role="columnheader"
@@ -358,6 +368,7 @@
 		position: relative;
 		height: 100%;
 		width: auto;
+		min-height: var(--grid-height, calc(var(--row-height) * (var(--min-rows) + 1)));
 		max-width: var(--grid-space-width);
 		background: var(--cell-bg, white);
 		color: var(--cell-color);

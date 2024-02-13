@@ -148,4 +148,9 @@ export interface GridProps<T> {
 	 * @default 'rgba(33, 255, 151, 0.5)'
 	 */
 	'--dragging-bg'?: string;
+	/**
+	 * Min height for the grid container
+	 * @default RowHeight * 6
+	 */
+	'--grid-height'?: string;
 }
