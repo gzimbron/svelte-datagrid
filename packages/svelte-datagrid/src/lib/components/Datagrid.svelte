@@ -56,6 +56,14 @@
 		easing: quadIn
 	};
 
+	if (!columns || columns.length < 1) {
+		throw new Error('Columns are required');
+	}
+
+	if (!rows) {
+		throw new Error('Rows are required');
+	}
+
 	export const scrollToRow = (rowIndex: number) => {
 		if (!gridBody) return;
 		gridBody.scrollTo({
