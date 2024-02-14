@@ -1,5 +1,14 @@
 # website
 
+## 0.0.12
+
+### Patch Changes
+
+- 994fb83: Add controls to show state, and scroll to specific row index
+- Updated dependencies [994fb83]
+- Updated dependencies [994fb83]
+  - @gzim/svelte-datagrid@0.2.3
+
 ## 0.0.11
 
 ### Patch Changes

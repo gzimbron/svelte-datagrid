@@ -1,5 +1,12 @@
 # @gzim/svelte-datagrid
 
+## 0.2.3
+
+### Patch Changes
+
+- 994fb83: Fix: Negative Y scroll on iOS blink
+- 994fb83: Add Properties: headerRowHeight & rowsPerPage
+
 ## 0.2.2
 
 ### Patch Changes
