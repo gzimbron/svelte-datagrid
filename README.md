@@ -247,6 +247,8 @@ Datagrid provides a few options for controlling the grid and its interactions:
 ### Configurations
 
 - `rowHeight` - The row height in pixels _(Default: 24)_
+- `headerRowHeight` - The row height in pixels _(Default: 24)_
+- `rowsPerPage` - The number of rows to render per page _(Default: rows lenght up to 10)_
 - `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
 - `allColumnsDraggable` - Set all columns draggable by default, ignoring the `draggable` property of each column _(Default: false)_
 

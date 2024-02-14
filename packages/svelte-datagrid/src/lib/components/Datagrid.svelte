@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+	import type { GridProps } from '$lib/DataGridProps.js';
+
 	import { swapGridColums } from '$lib/functions/gridHelpers.js';
 
 	import { writable } from 'svelte/store';
@@ -17,15 +19,49 @@
 
 	import { dragAndDrop } from '$lib/actions/dragAndDrop.js';
 
-	import type { GridCellUpdated, GridColumn, GridProps, GridRow } from '$lib/types.js';
+	import type { GridCellUpdated, GridColumn, GridRow } from '$lib/types.js';
 	import { beforeUpdate, createEventDispatcher, setContext } from 'svelte';
 
 	// eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
-	interface $$Props extends GridProps<T> {
+	interface $$Props extends GridProps {
+		/**
+		 * The columns of the grid
+		 */
+		columns: GridColumn<T>[];
+		/**
+		 * The rows of the grid
+		 */
+		rows: T[];
+		/**
+		 * The number of rows to render per page
+		 * @default rows.length > 10 ? 10 : rows.length
+		 */
+		rowsPerPage?: number;
+		/**
+		 * The height of the grid rows in pixels
+		 */
+		headerRowHeight?: number;
+		/**
+		 * The height of the grid rows in pixels
+		 */
+		rowHeight?: number;
+		/**
+		 * Slice of extra rows to render outside the viewport
+		 */
+		extraRows?: number;
+
+		/**
+		 * Set all columns draggable by default, ignoring the `draggable` property of each column
+		 */
+		allColumnsDraggable?: boolean;
+
 		/**
 		 * Get the current grid state like visible rows indexes, scroll position, etc.
 		 */
 		getGridState?: typeof getGridState;
+		/**
+		 * Scroll to a specific row index
+		 */
 		scrollToRow?: typeof scrollToRow;
 	}
 
@@ -42,13 +78,17 @@
 	const dispatch = createEventDispatcher<ComponentEventsList>();
 
 	const MIN_ROW_HEIGHT = 20;
+	const MAX_DEFAULT_ROWS_PER_PAGE = 10;
 
 	// eslint-disable-next-line no-undef
 	export let columns: $$Props['columns'];
 	// eslint-disable-next-line no-undef
 	export let rows: $$Props['rows'];
-	export let rowHeight = 30;
+	export let rowHeight = 24;
+	export let headerRowHeight = 24;
 	export let extraRows = 0;
+	export let rowsPerPage =
+		rows.length > MAX_DEFAULT_ROWS_PER_PAGE ? MAX_DEFAULT_ROWS_PER_PAGE : rows.length;
 	export let allColumnsDraggable = false;
 	export let animationParams: FlipParams = {
 		duration: 150,
@@ -95,10 +135,14 @@
 			rowHeight = MIN_ROW_HEIGHT;
 			scrollToRefreshView();
 		}
+		if (rowsPerPage < 1) {
+			rowsPerPage = 1;
+		}
 	});
 
 	let scrollTop = 0;
 	let scrollLeft = 0;
+	let visibleRowsIndexes: ReturnType<typeof getVisibleRowsIndexes> = { start: 0, end: rowsPerPage };
 
 	$: columnWidths = updateColumnWidths(columns);
 	$: gridSpaceWidth = calculateGridSpaceWidth(columnWidths);
@@ -108,7 +152,7 @@
 	$: visibleRowsIndexes = getVisibleRowsIndexes(
 		rowHeight,
 		scrollTop,
-		gridBody?.clientHeight,
+		rowsPerPage * rowHeight,
 		totalRows,
 		extraRows
 	);
@@ -126,7 +170,7 @@
 		if (totalRows) {
 			scrollToRefreshView();
 		}
-		if (rowHeight) {
+		if (rowHeight || headerRowHeight) {
 			onScroll();
 			scrollToRefreshView();
 		}
@@ -185,10 +229,11 @@
 	bind:this={svelteGridWrapper}
 	role="table"
 	class="svelte-grid"
+	style:--header-row-height="{headerRowHeight}px"
 	style:--row-height="{rowHeight}px"
 	style:--grid-space-width="{gridSpaceWidth}px"
 	style:--grid-space-height="{gridSpaceHeight}px"
-	style:--min-rows={rows.length > 5 ? 5 : rows.length}
+	style:--min-rows={rowsPerPage}
 	class:resizing={isResizing || isDragging}
 	class:isDragging
 >
@@ -366,9 +411,13 @@
 
 	.svelte-grid {
 		position: relative;
-		height: 100%;
 		width: auto;
-		min-height: var(--grid-height, calc(var(--row-height) * (var(--min-rows) + 1)));
+		height: var(
+			--grid-height,
+			calc(
+				var(--row-height) * var(--min-rows) + var(--header-row-height) + var(--header-border, 2px)
+			)
+		);
 		max-width: var(--grid-space-width);
 		background: var(--cell-bg, white);
 		color: var(--cell-color);
@@ -394,7 +443,7 @@
 
 	.header-row {
 		width: var(--grid-space-width);
-		height: var(--row-height);
+		height: var(--header-row-height);
 		flex-direction: row;
 		position: relative;
 		top: 0;
@@ -408,8 +457,8 @@
 
 	.svelte-grid-body {
 		position: absolute;
-		top: calc(var(--row-height) + var(--header-border, 2px));
-		height: calc(100% - var(--row-height) - var(--header-border, 2px));
+		top: calc(var(--header-row-height) + var(--header-border, 2px));
+		height: calc(100% - var(--header-row-height) - var(--header-border, 2px));
 		width: 100%;
 		overflow: auto;
 	}
@@ -439,6 +488,11 @@
 		overflow: hidden;
 		height: var(--row-height);
 		line-height: var(--row-height);
+	}
+
+	.header-row .grid-cell {
+		height: var(--header-row-height);
+		line-height: var(--header-row-height);
 	}
 
 	.grid-cell:not(:last-child) {
