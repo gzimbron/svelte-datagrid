@@ -3,7 +3,7 @@
 	"version": "0.0.11",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev -- port 3590",
+		"dev": "vite dev --port 3590 --host 0.0.0.0",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
