@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.2.4
+
+### Patch Changes
+
+- cb53ad7: Add README.md to deployed package
+
 ## 0.2.3
 
 ### Patch Changes
