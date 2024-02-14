@@ -27,10 +27,12 @@
 		/**
 		 * The columns of the grid
 		 */
+		// eslint-disable-next-line no-undef
 		columns: GridColumn<T>[];
 		/**
 		 * The rows of the grid
 		 */
+		// eslint-disable-next-line no-undef
 		rows: T[];
 		/**
 		 * The number of rows to render per page
