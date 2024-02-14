@@ -36,7 +36,7 @@
 
 			<div class="flex items-center gap-4">
 				<div class="sm:flex sm:gap-4">
-					<a href={SITE_GITHUB_URL} target="_blank">
+					<a href={SITE_GITHUB_URL} target="_blank" class="text-3xl">
 						<GitHubIcon></GitHubIcon>
 					</a>
 				</div>

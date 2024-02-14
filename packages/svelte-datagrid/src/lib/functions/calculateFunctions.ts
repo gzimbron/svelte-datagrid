@@ -28,7 +28,10 @@ export function getVisibleRowsIndexes(
 	extraRows: number
 ) {
 	//console.log({ rowHeight, scrollTop, wrapperHeight, totalRows, extraRows });
-	const start = Math.floor(scrollTop / rowHeight);
+	let start = Math.floor(scrollTop / rowHeight);
+
+	if (start < 0) start = 0;
+
 	const end = Math.min(Math.ceil((scrollTop + wrapperHeight) / rowHeight) + extraRows, totalRows);
 	return { start, end };
 }
