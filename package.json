@@ -6,7 +6,7 @@
 		"lint": "turbo run lint",
 		"test": "turbo run test",
 		"format": "prettier --write .",
-		"package": "turbo run package",
+		"package": "turbo run package && cp README.md packages/svelte-datagrid/README.md",
 		"release": "changeset publish"
 	},
 	"devDependencies": {
