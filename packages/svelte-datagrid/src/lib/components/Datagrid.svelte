@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-	import { MAX_DEFAULT_ROWS_PER_PAGE, MIN_ROW_HEIGHT } from '$lib/configurations.js';
+	import { MIN_ROW_HEIGHT } from '$lib/configurations.js';
 
 	import type { GridProps } from '$lib/DataGridProps.js';
 
