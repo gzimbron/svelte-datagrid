@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+	import { MAX_DEFAULT_ROWS_PER_PAGE, MIN_ROW_HEIGHT } from '$lib/configurations.js';
+
 	import type { GridProps } from '$lib/DataGridProps.js';
 
 	import { swapGridColums } from '$lib/functions/gridHelpers.js';
@@ -6,6 +8,7 @@
 	import { writable } from 'svelte/store';
 
 	import {
+		calculateDefaultRowsPerPage,
 		calculateGridSpaceWidth,
 		calculatePercent,
 		calculateXPositions,
@@ -79,9 +82,6 @@
 	};
 	const dispatch = createEventDispatcher<ComponentEventsList>();
 
-	const MIN_ROW_HEIGHT = 20;
-	const MAX_DEFAULT_ROWS_PER_PAGE = 10;
-
 	// eslint-disable-next-line no-undef
 	export let columns: $$Props['columns'];
 	// eslint-disable-next-line no-undef
@@ -89,8 +89,7 @@
 	export let rowHeight = 24;
 	export let headerRowHeight = 24;
 	export let extraRows = 0;
-	export let rowsPerPage =
-		rows.length > MAX_DEFAULT_ROWS_PER_PAGE ? MAX_DEFAULT_ROWS_PER_PAGE : rows.length;
+	export let rowsPerPage = calculateDefaultRowsPerPage(rows.length);
 	export let allColumnsDraggable = false;
 	export let animationParams: FlipParams = {
 		duration: 150,

@@ -2,6 +2,7 @@ import type { GridColumn } from '$lib/types.js';
 import { render } from '@testing-library/svelte';
 import { beforeEach, describe, expect, it } from 'vitest';
 import Datagrid from './Datagrid.svelte';
+import { calculateDefaultRowsPerPage } from '$lib/functions/calculateFunctions.js';
 
 interface Cat {
 	name: string;
@@ -65,5 +66,17 @@ describe('Datagrid', () => {
 		const { container } = render(Datagrid<Cat>, { columns, rows: [] });
 
 		expect(container.firstChild).not.toBeNull();
+	});
+
+	it(`should render default rows in viewport`, async () => {
+		const defaultNumRows = calculateDefaultRowsPerPage(rows.length);
+
+		const { findAllByRole } = render(Datagrid<Cat>, { columns, rows });
+
+		let rowsResult = await findAllByRole('row');
+
+		rowsResult = rowsResult.filter((row) => !row.classList.contains('header-row'));
+
+		expect(rowsResult).toHaveLength(defaultNumRows);
 	});
 });

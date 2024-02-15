@@ -1,3 +1,4 @@
+import { MAX_DEFAULT_ROWS_PER_PAGE } from '$lib/configurations.js';
 import type { GridColumn } from '$lib/types.js';
 
 export const MIN_COLUMN_WIDTH = 20;
@@ -42,4 +43,8 @@ export function getRowTop(rowIndex: number, rowHeight: number) {
 
 export function calculatePercent(actual: number, total: number) {
 	return Math.round((actual / total) * 100);
+}
+
+export function calculateDefaultRowsPerPage(rowsLength: number) {
+	return rowsLength > MAX_DEFAULT_ROWS_PER_PAGE ? MAX_DEFAULT_ROWS_PER_PAGE : rowsLength;
 }
