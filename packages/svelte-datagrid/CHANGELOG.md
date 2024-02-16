@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.3.1
+
+### Patch Changes
+
+- eac353a: Fix resizing border
+
 ## 0.3.0
 
 ### Minor Changes
