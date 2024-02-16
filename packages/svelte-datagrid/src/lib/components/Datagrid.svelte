@@ -120,6 +120,7 @@
 		throw new Error('Rows are required');
 	}
 
+	// eslint-disable-next-line no-undef
 	export const scrollToRow = (rowIndex: number, behavior: ScrollBehavior = 'smooth') => {
 		if (!gridBody) return;
 		gridBody.scrollTo({
