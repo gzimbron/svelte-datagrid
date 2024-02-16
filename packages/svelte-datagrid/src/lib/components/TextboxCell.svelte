@@ -93,7 +93,7 @@
 		width: 100%;
 		height: 100%;
 		background: var(--textbox-cell-bg, var(--cell-bg, white));
-		z-index: 3;
+		z-index: 2;
 	}
 	input {
 		height: 100%;

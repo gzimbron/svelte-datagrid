@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+	import { reziseColumn } from '$lib/actions/resizeColumn.js';
+
 	import { MIN_ROW_HEIGHT } from '$lib/configurations.js';
 
 	import type { GridProps } from '$lib/DataGridProps.js';
@@ -14,6 +16,7 @@
 		calculateXPositions,
 		getRowTop,
 		getVisibleRowsIndexes,
+		MIN_COLUMN_WIDTH,
 		updateColumnWidths
 	} from '$lib/functions/calculateFunctions.js';
 
@@ -58,6 +61,11 @@
 		/**
 		 * Set all columns draggable by default, ignoring the `draggable` property of each column
 		 */
+		allColumnsResizable?: boolean;
+
+		/**
+		 * Set all columns draggable by default, ignoring the `draggable` property of each column
+		 */
 		allColumnsDraggable?: boolean;
 
 		/**
@@ -91,10 +99,17 @@
 	export let extraRows = 0;
 	export let rowsPerPage = calculateDefaultRowsPerPage(rows.length);
 	export let allColumnsDraggable = false;
+	export let allColumnsResizable = false;
 	export let animationParams: FlipParams = {
 		duration: 150,
 		delay: 0,
 		easing: quadIn
+	};
+
+	const NO_TRANSITION_EFFECT = {
+		duration: 0,
+		delay: 0,
+		easing: undefined
 	};
 
 	if (!columns || columns.length < 1) {
@@ -105,11 +120,11 @@
 		throw new Error('Rows are required');
 	}
 
-	export const scrollToRow = (rowIndex: number) => {
+	export const scrollToRow = (rowIndex: number, behavior: ScrollBehavior = 'smooth') => {
 		if (!gridBody) return;
 		gridBody.scrollTo({
 			top: rowIndex * rowHeight,
-			behavior: 'smooth'
+			behavior
 		});
 	};
 
@@ -128,6 +143,7 @@
 	let isResizing = false;
 	let isDragging = false;
 	let columnDragging = -1;
+	let columnResizing = -1;
 	let yScrollPercent = 0;
 	let xScrollPercent = 0;
 
@@ -238,6 +254,12 @@
 	class:resizing={isResizing || isDragging}
 	class:isDragging
 >
+	{#if columnResizing != -1}
+		<div
+			class="resizingbar"
+			style:left="{columnWidths[columnResizing] + xPositions[columnResizing]}px"
+		></div>
+	{/if}
 	<div class="svelte-grid-head" role="rowgroup">
 		<div role="row" class="header-row" style:left="{scrollLeft * -1}px">
 			{#each columns as column, i (i)}
@@ -249,9 +271,27 @@
 					role="columnheader"
 					style:width="{columnWidths[i]}px"
 					style:left="{xPositions[i]}px"
-					class:draggable={allColumnsDraggable || column.draggable}
-					class:dragging={false}
-					animate:flip={animationParams}
+					draggable={!isResizing && (allColumnsDraggable || column.draggable)}
+					class:draggable={!isResizing && (allColumnsDraggable || column.draggable)}
+					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
+					class:dragging={isDragging && columnDragging == i}
+					animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
+					use:reziseColumn={{
+						resizable: allColumnsResizable || column.resizable,
+						startResize() {
+							columnResizing = i;
+							isResizing = true;
+						},
+						endResize() {
+							columnResizing = -1;
+							isResizing = false;
+						},
+						onResize(data) {
+							if (data < MIN_COLUMN_WIDTH) return;
+
+							columnWidths[i] = data;
+						}
+					}}
 					use:dragAndDrop={{
 						draggable: allColumnsDraggable || column.draggable,
 						dragStart: () => {
@@ -319,7 +359,7 @@
 						style="width:{columnWidths[j]}px"
 						style:left="{xPositions[j]}px"
 						class:draggableColumnCell={allColumnsDraggable || column.draggable}
-						animate:flip={animationParams}
+						animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
 					>
 						<div class="cell-container" class:cell-default={!column.cellComponent}>
 							{#if column.cellComponent}
@@ -343,6 +383,15 @@
 </div>
 
 <style lang="postcss">
+	.resizingbar {
+		position: absolute;
+		top: 0;
+		width: 2px;
+		height: 100%;
+		background-color: var(--header-border-color, #666);
+		transform: translate(-50%, 0);
+		z-index: 3;
+	}
 	.resizing * {
 		user-select: none;
 	}
@@ -369,7 +418,18 @@
 		background-color: var(--no-draggable-fg, rgba(66, 66, 66, 0.5));
 	}
 
-	.draggable :hover {
+	.columnheader.resizable:hover::after {
+		content: '';
+		cursor: ew-resize;
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 2px;
+		height: 100%;
+		z-index: 3;
+	}
+
+	.columnheader.draggable:not(.dragging):hover {
 		content: '';
 		position: absolute;
 		background-color: var(--draggable-bg, rgba(33, 248, 255, 0.5));
@@ -377,9 +437,10 @@
 		right: 0;
 		width: 100%;
 		height: 100%;
+		cursor: move;
 	}
 
-	.columnheader.dragging {
+	.columnheader.dragging:hover {
 		border: var(--border, 1px solid #666);
 		background-color: var(--dragging-bg, rgba(33, 255, 151, 0.5));
 	}

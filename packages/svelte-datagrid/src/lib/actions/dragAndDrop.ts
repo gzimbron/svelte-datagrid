@@ -12,9 +12,23 @@ export const dragAndDrop: Action<HTMLElement, ActionParams> = (
 	{ draggable, dragEnd, dragStart }: ActionParams = {}
 ) => {
 	if (draggable) {
-		node.draggable = true;
-
 		node.addEventListener('dragstart', (e) => {
+			const div = e.target as HTMLElement;
+			const isRezisable = div.classList.contains('resizable');
+
+			if (isRezisable) {
+				const resizableWidth = parseInt(
+					window.getComputedStyle(div, '::after').width.replace('px', '')
+				);
+
+				const clickPosition = e.clientX - div.getBoundingClientRect().left;
+
+				if (clickPosition >= div.offsetWidth - resizableWidth - 2) {
+					e.preventDefault();
+					return;
+				}
+			}
+
 			dragStart && dragStart(e);
 			node.classList.add('dragging');
 		});
@@ -27,7 +41,6 @@ export const dragAndDrop: Action<HTMLElement, ActionParams> = (
 
 	return {
 		destroy() {
-			node.draggable = false;
 			node.removeEventListener('dragstart', () => {});
 			node.removeEventListener('dragend', () => {});
 		}

@@ -10,6 +10,7 @@ export type GridColumn<T> = {
 	cellComponent?: CustomCellComponent<T>;
 	options?: GridColumnOption[];
 	draggable?: boolean;
+	resizable?: boolean;
 };
 
 export type GridColumnOption = {
