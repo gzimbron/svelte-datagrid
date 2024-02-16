@@ -35,7 +35,8 @@
 			dataKey: 'firstName',
 			width: 200,
 			cellComponent: TextboxCell,
-			draggable: true
+			draggable: true,
+			resizable: true
 		},
 		{
 			label: 'Last Name',
@@ -130,6 +131,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let getGridState: () => any | undefined;
 	let scrollToRow: (index: number) => void | undefined;
+	let allColumnsResizable = true;
 </script>
 
 <Progressbar {progress}></Progressbar>
@@ -145,6 +147,7 @@
 		on:valueUpdated={onValueUpdated}
 		on:scroll={gridScrolled}
 		on:columnsSwapped={({ detail }) => console.log(detail)}
+		{allColumnsResizable}
 	/>
 </section>
 
@@ -175,6 +178,10 @@
 	</div>
 
 	<div class="flexy">
+		<label for="allColumnsResizable">
+			<p>Resizable Columns</p>
+			<input type="checkbox" id="allColumnsResizable" bind:checked={allColumnsResizable} />
+		</label>
 		<label for="rowheight">
 			<p>Row Height: {rowHeight}</p>
 			<input type="range" min={20} max={50} step={1} id="rowheight" bind:value={rowHeight} />
@@ -197,5 +204,9 @@
 
 	.flexy {
 		@apply flex flex-wrap gap-4 justify-center;
+	}
+
+	.flexy label {
+		@apply flex flex-col items-center gap-2;
 	}
 </style>
