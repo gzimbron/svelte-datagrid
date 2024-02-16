@@ -255,12 +255,6 @@
 	class:resizing={isResizing || isDragging}
 	class:isDragging
 >
-	{#if columnResizing != -1}
-		<div
-			class="resizingbar"
-			style:left="{columnWidths[columnResizing] + xPositions[columnResizing]}px"
-		></div>
-	{/if}
 	<div class="svelte-grid-head" role="rowgroup">
 		<div role="row" class="header-row" style:left="{scrollLeft * -1}px">
 			{#each columns as column, i (i)}
@@ -272,6 +266,7 @@
 					role="columnheader"
 					style:width="{columnWidths[i]}px"
 					style:left="{xPositions[i]}px"
+					class:resizingColumn={isResizing && columnResizing == i}
 					draggable={!isResizing && (allColumnsDraggable || column.draggable)}
 					class:draggable={!isResizing && (allColumnsDraggable || column.draggable)}
 					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
@@ -359,6 +354,7 @@
 						data-row={row.i}
 						style="width:{columnWidths[j]}px"
 						style:left="{xPositions[j]}px"
+						class:resizingColumn={isResizing && columnResizing == j}
 						class:draggableColumnCell={allColumnsDraggable || column.draggable}
 						animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
 					>
@@ -563,5 +559,9 @@
 	}
 	.grid-cell > * {
 		height: 100%;
+	}
+
+	.grid-cell.resizingColumn {
+		border-right: var(--border-resizing, 2px solid #666);
 	}
 </style>
