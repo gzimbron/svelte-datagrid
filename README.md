@@ -295,6 +295,7 @@ const scrollToRow: (rowIndex: number, behavior: ScrollBehavior = 'smooth') => vo
 - `--draggable-bg` CSS Hover color for draggable columns. _(Default: rgba(33, 248, 255, 0.5))_
 - `--dragging-bg` CSS Background color for actual dragging column. _(Default: rgba(33, 255, 151, 0.5))_
 - `--grid-height` Min height for the grid container _(@default RowHeight \* 6)_
+- `--border-resizing` Min height for the grid container _(@default 2px solid #666)_
 
 ## Events:
 
