@@ -6,11 +6,11 @@ Svelte DataGrid is a high-performance, feature-rich grid component for Svelte. I
 
 It's based on the excellent (but deprecated) [svelte-data-grid](https://github.com/bsssshhhhhhh/svelte-data-grid).
 
-## Demo website
+## 👀 Demo website
 
 [![Demo website](./assets/demo-screenshot.webp)](https://gzimbron.github.io/svelte-datagrid)
 
-## Features
+## 🚀 Features
 
 - High scrolling performance
 - ARIA attributes set on elements
@@ -18,14 +18,14 @@ It's based on the excellent (but deprecated) [svelte-data-grid](https://github.c
 - Column headers remain fixed at the top of the grid
 - Custom components can be specified to control how individual table cells or column headers are displayed
 
-## TODO
+## 📋 TODO
 
 - [x] Demo website
 - [x] Re-ordering columns
-- [ ] Resizing columns
-- [ ] Feel free to suggest more features or contribute to the project
+- [x] Resizing columns
+- ⭐️ Feel free to suggest more features or contribute to the project
 
-## Usage:
+## ℹ️ Usage:
 
 If using within Sapper:
 
@@ -85,7 +85,7 @@ Datagrid requires 2 properties to be passed in order to display data: `rows` and
 ];
 ```
 
-## Editing Data
+## 📝 Editing Data
 
 You can use this 3 componets as cellComponent to edit data:
 
@@ -156,7 +156,7 @@ CheckboxCell will set the checked state of the checkbox depending on the boolean
 }
 ```
 
-## Custom Cell Components
+## ✨ Custom Cell Components
 
 To create a custom cell component, create a new Svelte component following the example below.
 
@@ -220,7 +220,7 @@ import MyCustomCell from './MyCustomCell.svelte';
 ]
 ```
 
-## Custom Header Components
+## ✨ Custom Header Components
 
 Header components can also be specified in `columns` entries as the `headerComponent` property. Header components are only passed `column`, the column object from `columns`.
 
@@ -240,11 +240,11 @@ Header components can also be specified in `columns` entries as the `headerCompo
 </style>
 ```
 
-## Properties:
+## 🛠️ Options and Functions:
 
 Datagrid provides a few options for controlling the grid and its interactions:
 
-### Configurations
+### ⚙️ Properties
 
 - `rowHeight` - The row height in pixels _(Default: 24)_
 - `headerRowHeight` - The row height in pixels _(Default: 24)_
@@ -252,7 +252,7 @@ Datagrid provides a few options for controlling the grid and its interactions:
 - `extraRows` - Add extra rows to the virtual list to improve scrolling performance _(Default: 0)_
 - `allColumnsDraggable` - Set all columns draggable by default, ignoring the `draggable` property of each column _(Default: false)_
 
-### Functions exported
+### 💫 Functions exported
 
 Yoy can bind to the following functions to control the grid:
 
@@ -274,10 +274,10 @@ const getGridState: () => {
 - `scrollToRow` - A function that scrolls the grid to a specific row index.
 
 ```typescript
-const scrollToRow: (rowIndex: number) => void;
+const scrollToRow: (rowIndex: number, behavior: ScrollBehavior = 'smooth') => void;
 ```
 
-### Styling
+### 💄 Styling
 
 - `--border` Css: Custom style for grid borders _(Default: 1px)_
 - `--header-border` Custom width for header row border bottom _(Default: 2px)_
