@@ -1,5 +1,13 @@
 # website
 
+## 0.0.14
+
+### Patch Changes
+
+- fb7fccd: Add resizable columns example
+- Updated dependencies [fb7fccd]
+  - @gzim/svelte-datagrid@0.3.0
+
 ## 0.0.13
 
 ### Patch Changes
