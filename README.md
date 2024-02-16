@@ -27,13 +27,13 @@ It's based on the excellent (but deprecated) [svelte-data-grid](https://github.c
 
 ## ℹ️ Usage:
 
-If using within Sapper:
+Install:
 
 ```bash
 npm install @gzim/svelte-datagrid
 ```
 
-If using from inside a svelte component:
+Import:
 
 ```javascript
 import { Datagrid } from '@gzim/svelte-datagrid';
