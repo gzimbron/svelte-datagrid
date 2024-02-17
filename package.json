@@ -5,6 +5,8 @@
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
 		"test": "turbo run test",
+		"test:ui": "turbo run test:ui",
+		"test:watch": "turbo run test:watch",
 		"format": "prettier --write .",
 		"package": "turbo run package && cp README.md packages/svelte-datagrid/README.md",
 		"release": "changeset publish"

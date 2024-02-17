@@ -380,15 +380,6 @@
 </div>
 
 <style lang="postcss">
-	.resizingbar {
-		position: absolute;
-		top: 0;
-		width: 2px;
-		height: 100%;
-		background-color: var(--header-border-color, #666);
-		transform: translate(-50%, 0);
-		z-index: 3;
-	}
 	.resizing * {
 		user-select: none;
 	}
