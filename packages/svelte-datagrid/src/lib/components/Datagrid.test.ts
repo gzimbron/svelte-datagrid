@@ -1,40 +1,39 @@
+import { calculateDefaultRowsPerPage } from '$lib/functions/calculateFunctions.js';
 import type { GridColumn } from '$lib/types.js';
-import { render } from '@testing-library/svelte';
+import { fireEvent, render, screen } from '@testing-library/svelte';
 import { beforeEach, describe, expect, it } from 'vitest';
 import Datagrid from './Datagrid.svelte';
-import { calculateDefaultRowsPerPage } from '$lib/functions/calculateFunctions.js';
 
 interface Cat {
 	name: string;
 	age: number;
 	color: string;
 }
+const columns: GridColumn<Cat>[] = [
+	{
+		label: 'Name',
+		dataKey: 'name',
+		width: 120
+	},
+	{
+		label: 'Age',
+		dataKey: 'age',
+		width: 80
+	},
+	{
+		label: 'Color',
+		dataKey: 'color',
+		width: 120
+	}
+];
+
+const rows: Cat[] = [
+	{ name: 'Fluffy', age: 2, color: 'black' },
+	{ name: 'Whiskers', age: 3, color: 'white' },
+	{ name: 'Felix', age: 1, color: 'orange' }
+];
 
 describe('Datagrid', () => {
-	const columns: GridColumn<Cat>[] = [
-		{
-			label: 'Name',
-			dataKey: 'name',
-			width: 120
-		},
-		{
-			label: 'Age',
-			dataKey: 'age',
-			width: 80
-		},
-		{
-			label: 'Color',
-			dataKey: 'color',
-			width: 120
-		}
-	];
-
-	const rows: Cat[] = [
-		{ name: 'Fluffy', age: 2, color: 'black' },
-		{ name: 'Whiskers', age: 3, color: 'white' },
-		{ name: 'Felix', age: 1, color: 'orange' }
-	];
-
 	beforeEach(() => {
 		document.body.innerHTML = '';
 	});
@@ -78,5 +77,22 @@ describe('Datagrid', () => {
 		rowsResult = rowsResult.filter((row) => !row.classList.contains('header-row'));
 
 		expect(rowsResult).toHaveLength(defaultNumRows);
+	});
+
+	it(`should update visibleRowsIndexes when scroll top by 200`, async () => {
+		const { component } = render(Datagrid<Cat>, {
+			columns,
+			rows: [...rows, ...rows, ...rows, ...rows, ...rows],
+			rowsPerPage: 3
+		});
+
+		const dataGridBody = (await screen.findAllByRole('rowgroup'))[1];
+
+		await fireEvent.scroll(dataGridBody, { target: { scrollTop: 200 } });
+
+		const { visibleRowsIndexes } = component.getGridState();
+
+		expect(visibleRowsIndexes.start).toBe(8);
+		expect(visibleRowsIndexes.end).toBe(12);
 	});
 });
