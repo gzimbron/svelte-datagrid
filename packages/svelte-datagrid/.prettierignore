@@ -5,3 +5,4 @@ yarn.lock
 /.changeset
 /dist
 /.github
+node_modules

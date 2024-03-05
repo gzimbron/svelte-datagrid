@@ -140,6 +140,7 @@
 		headerRowHeight={30}
 		{columns}
 		{rowsPerPage}
+		{allColumnsResizable}
 		bind:getGridState
 		bind:scrollToRow
 		bind:rows
@@ -147,7 +148,7 @@
 		on:valueUpdated={onValueUpdated}
 		on:scroll={gridScrolled}
 		on:columnsSwapped={({ detail }) => console.log(detail)}
-		{allColumnsResizable}
+		on:rowClick={({ detail }) => console.log(detail)}
 	/>
 </section>
 
