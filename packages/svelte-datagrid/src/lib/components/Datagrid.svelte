@@ -87,6 +87,10 @@
 		valueUpdated: GridCellUpdated<T>;
 		// eslint-disable-next-line no-undef
 		columnsSwapped: { from: GridColumn<T>; to: GridColumn<T>; columns: $$Props['columns'] };
+		// eslint-disable-next-line no-undef
+		rowClick: { row: GridRow<T> };
+		// eslint-disable-next-line no-undef
+		rowDblClick: { row: GridRow<T> };
 	};
 	const dispatch = createEventDispatcher<ComponentEventsList>();
 
@@ -241,6 +245,16 @@
 		columns = [...detail.columns];
 		dispatch('columnsSwapped', detail);
 	};
+
+	// eslint-disable-next-line no-undef
+	const rowClick = (row: GridRow<T>) => {
+		dispatch('rowClick', { row });
+	};
+
+	// eslint-disable-next-line no-undef
+	const rowDblClick = (row: GridRow<T>) => {
+		dispatch('rowDblClick', { row });
+	};
 </script>
 
 <div
@@ -345,6 +359,10 @@
 				style:top="{getRowTop(row.i, rowHeight)}px"
 				role="row"
 				aria-rowindex={row.i}
+				tabindex={row.i}
+				on:keydown={() => {}}
+				on:click={() => rowClick(row)}
+				on:dblclick={() => rowDblClick(row)}
 			>
 				{#each columns as column, j (j)}
 					<div

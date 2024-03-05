@@ -303,6 +303,8 @@ const scrollToRow: (rowIndex: number, behavior: ScrollBehavior = 'smooth') => vo
 - `xScroll` - Triggered when the grid is scrolled on X axis. The X scroll percent position can be accessed from `event.detail`
 - `valueUpdated` - Triggered when a cell's value is updated. The updated value can be accessed from `event.value`, other data can be accessed from `event.row`, `event.column` and `event.rowIndex`
 - `columnsSwapped` - Triggered when columns are swapped. `event.detail` contains `from`, `to` and new `columns` order properties
+- `rowClick` - Triggered when a row is clicked. The clicked row can be accessed from `event.detail`
+- `rowDblClick` - Triggered when a row is double clicked. The clicked row can be accessed from `event.detail`
 
 ## Bugs? Suggestions?
 
