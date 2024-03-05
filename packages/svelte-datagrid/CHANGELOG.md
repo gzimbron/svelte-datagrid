@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.4.0
+
+### Minor Changes
+
+- b4706c4: Added rowClick and rowDblClick events suggested in issue #36
+
 ## 0.3.1
 
 ### Patch Changes
