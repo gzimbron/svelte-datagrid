@@ -71,6 +71,16 @@ export interface GridProps {
 	 */
 	'--dragging-bg'?: string;
 	/**
+	 * CSS Background color for the drop target column during drag.
+	 * @default 'rgba(255, 140, 0, 0.5)'
+	 */
+	'--drop-target-bg'?: string;
+	/**
+	 * CSS Border color for the drop target column during drag.
+	 * @default 'rgba(255, 140, 0, 0.9)'
+	 */
+	'--drop-target-border'?: string;
+	/**
 	 * Min height for the grid container
 	 * @default RowHeight * 6
 	 */
