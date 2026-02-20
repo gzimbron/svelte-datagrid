@@ -26,23 +26,23 @@
 
 	let columns: GridColumn<Person>[] = [
 		{
-			label: 'Zodiac',
-			dataKey: 'zodiac',
-			draggable: true,
-			width: 100
+			label: 'Last Name',
+			dataKey: 'lastName',
+			width: 200,
+			draggable: true
 		},
 		{
 			label: 'First Name',
 			dataKey: 'firstName',
 			width: 200,
-			cellComponent: TextboxCell,
 			resizable: true,
 			frozen: 'left'
 		},
 		{
-			label: 'Last Name',
-			dataKey: 'lastName',
-			width: 200,
+			label: 'Zodiac',
+			dataKey: 'zodiac',
+			width: 100,
+			cellComponent: TextboxCell,
 			draggable: true
 		},
 		{
@@ -57,8 +57,7 @@
 			label: 'Married',
 			dataKey: 'married',
 			width: 100,
-			cellComponent: CheckboxCell,
-			frozen: 'right'
+			cellComponent: CheckboxCell
 		}
 	];
 
