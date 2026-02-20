@@ -33,6 +33,8 @@ const rows: Cat[] = [
 	{ name: 'Felix', age: 1, color: 'orange' }
 ];
 
+const draggableColumns: GridColumn<Cat>[] = columns.map((c) => ({ ...c, draggable: true }));
+
 describe('Datagrid', () => {
 	beforeEach(() => {
 		document.body.innerHTML = '';
@@ -94,5 +96,95 @@ describe('Datagrid', () => {
 
 		expect(visibleRowsIndexes.start).toBe(8);
 		expect(visibleRowsIndexes.end).toBe(12);
+	});
+});
+
+describe('Datagrid column drag drop target', () => {
+	beforeEach(() => {
+		document.body.innerHTML = '';
+	});
+
+	it('should add dropTarget class to hovered column during drag', async () => {
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: draggableColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		const [source, target] = headers;
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(target);
+
+		expect(target.classList.contains('dropTarget')).toBe(true);
+	});
+
+	it('should not add dropTarget class to the column being dragged', async () => {
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: draggableColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		const [source] = headers;
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(source);
+
+		expect(source.classList.contains('dropTarget')).toBe(false);
+	});
+
+	it('should not add dropTarget class to non-draggable columns', async () => {
+		const mixedColumns: GridColumn<Cat>[] = [
+			{ ...columns[0], draggable: true },
+			{ ...columns[1], draggable: false },
+			{ ...columns[2], draggable: true }
+		];
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: mixedColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		const [source, nonDraggable] = headers;
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(nonDraggable);
+
+		expect(nonDraggable.classList.contains('dropTarget')).toBe(false);
+	});
+
+	it('should remove dropTarget class after drag ends', async () => {
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: draggableColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		const [source, target] = headers;
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(target);
+		expect(target.classList.contains('dropTarget')).toBe(true);
+
+		await fireEvent.dragEnd(source);
+		expect(target.classList.contains('dropTarget')).toBe(false);
+	});
+
+	it('should update dropTarget class when hovering a different column', async () => {
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: draggableColumns, rows });
+
+		const [source, second, third] = await findAllByTestId('columnheader');
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(second);
+		expect(second.classList.contains('dropTarget')).toBe(true);
+
+		await fireEvent.dragEnter(third);
+		expect(third.classList.contains('dropTarget')).toBe(true);
+		expect(second.classList.contains('dropTarget')).toBe(false);
+	});
+
+	it('should work with allColumnsDraggable prop', async () => {
+		const { findAllByTestId } = render(Datagrid<Cat>, {
+			columns,
+			rows,
+			allColumnsDraggable: true
+		});
+
+		const [source, target] = await findAllByTestId('columnheader');
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(target);
+
+		expect(target.classList.contains('dropTarget')).toBe(true);
 	});
 });
