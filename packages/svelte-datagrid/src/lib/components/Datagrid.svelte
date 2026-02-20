@@ -323,7 +323,9 @@
 					style:left="{cellLeftPositions[i]}px"
 					class:resizingColumn={isResizing && columnResizing == i}
 					draggable={!isResizing && !column.frozen && (allColumnsDraggable || column.draggable)}
-					class:draggable={!isResizing && !column.frozen && (allColumnsDraggable || column.draggable)}
+					class:draggable={!isResizing &&
+						!column.frozen &&
+						(allColumnsDraggable || column.draggable)}
 					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
 					class:dragging={isDragging && columnDragging == i}
 					class:dropTarget={isDragging &&
@@ -404,7 +406,13 @@
 		</div>
 	</div>
 
-	<div role="rowgroup" class="svelte-grid-body" bind:this={gridBody} bind:clientWidth={bodyClientWidth} on:scroll={onScroll}>
+	<div
+		role="rowgroup"
+		class="svelte-grid-body"
+		bind:this={gridBody}
+		bind:clientWidth={bodyClientWidth}
+		on:scroll={onScroll}
+	>
 		<div class="grid-space"></div>
 
 		{#each visibleRows as row, virtualRowIndex}
