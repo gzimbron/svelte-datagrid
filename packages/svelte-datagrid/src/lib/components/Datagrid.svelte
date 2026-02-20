@@ -148,6 +148,7 @@
 	let isResizing = false;
 	let isDragging = false;
 	let columnDragging = -1;
+	let columnDropTarget = -1;
 	let columnResizing = -1;
 	let yScrollPercent = 0;
 	let xScrollPercent = 0;
@@ -237,6 +238,7 @@
 	const resetDraggind = () => {
 		isDragging = false;
 		columnDragging = -1;
+		columnDropTarget = -1;
 	};
 
 	const swapColumns = (fromColumn: number, toColumn: number) => {
@@ -285,6 +287,15 @@
 					class:draggable={!isResizing && (allColumnsDraggable || column.draggable)}
 					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
 					class:dragging={isDragging && columnDragging == i}
+					class:dropTarget={isDragging &&
+						columnDropTarget === i &&
+						columnDropTarget !== columnDragging}
+					on:dragenter={() => {
+						if (isDragging && (allColumnsDraggable || column.draggable)) columnDropTarget = i;
+					}}
+					on:dragover={(e) => {
+						if (isDragging) e.preventDefault();
+					}}
 					animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
 					use:reziseColumn={{
 						resizable: allColumnsResizable || column.resizable,
@@ -452,6 +463,11 @@
 	}
 	.columnheader.dragging > * {
 		opacity: 0.6;
+	}
+
+	.columnheader.dropTarget {
+		background-color: var(--drop-target-bg, rgba(255, 140, 0, 0.5));
+		border-left: 3px solid var(--drop-target-border, rgba(255, 140, 0, 0.9));
 	}
 
 	.isDragging .svelte-grid-body .grid-cell:not(.draggableColumnCell) {
