@@ -32,18 +32,18 @@ Monorepo for `@gzim/svelte-datagrid` — a high-performance, accessible data gri
 
 Run from the repository root:
 
-| Command            | Description                                      |
-| ------------------ | ------------------------------------------------ |
-| `pnpm install`     | Install all dependencies                         |
-| `pnpm dev`         | Start dev servers (library + website)             |
-| `pnpm build`       | Build all packages                               |
-| `pnpm test`        | Run unit tests                                   |
-| `pnpm test:watch`  | Run tests in watch mode                          |
-| `pnpm test:ui`     | Run tests with Vitest UI                         |
-| `pnpm lint`        | Run ESLint + Prettier checks                     |
-| `pnpm format`      | Auto-format with Prettier                        |
-| `pnpm package`     | Build library dist + copy README                 |
-| `pnpm release`     | Publish via Changesets                           |
+| Command           | Description                           |
+| ----------------- | ------------------------------------- |
+| `pnpm install`    | Install all dependencies              |
+| `pnpm dev`        | Start dev servers (library + website) |
+| `pnpm build`      | Build all packages                    |
+| `pnpm test`       | Run unit tests                        |
+| `pnpm test:watch` | Run tests in watch mode               |
+| `pnpm test:ui`    | Run tests with Vitest UI              |
+| `pnpm lint`       | Run ESLint + Prettier checks          |
+| `pnpm format`     | Auto-format with Prettier             |
+| `pnpm package`    | Build library dist + copy README      |
+| `pnpm release`    | Publish via Changesets                |
 
 ## Key Source Files (Library)
 
@@ -84,6 +84,7 @@ packages/svelte-datagrid/src/lib/
 **Types:** `GridColumn<T>`, `GridCellUpdated<T>`, `GridRow<T>`, `GridProps`
 
 **Events emitted by Datagrid:**
+
 - `scroll` / `xScroll` — scrolling
 - `valueUpdated` — cell edits
 - `columnsSwapped` — column reorder

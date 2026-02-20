@@ -287,7 +287,9 @@
 					class:draggable={!isResizing && (allColumnsDraggable || column.draggable)}
 					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
 					class:dragging={isDragging && columnDragging == i}
-					class:dropTarget={isDragging && columnDropTarget === i && columnDropTarget !== columnDragging}
+					class:dropTarget={isDragging &&
+						columnDropTarget === i &&
+						columnDropTarget !== columnDragging}
 					on:dragenter={() => {
 						if (isDragging && (allColumnsDraggable || column.draggable)) columnDropTarget = i;
 					}}
