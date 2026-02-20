@@ -1,6 +1,6 @@
 {
 	"name": "website",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev --port 3590 --host 0.0.0.0",

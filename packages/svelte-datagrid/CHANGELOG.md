@@ -1,5 +1,11 @@
 # @gzim/svelte-datagrid
 
+## 0.5.0
+
+### Minor Changes
+
+- 1e31f30: Add frozen columns support (left/right), visual drop indicator during column drag, and improved test coverage for cell components.
+
 ## 0.4.0
 
 ### Minor Changes
