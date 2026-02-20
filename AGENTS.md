@@ -101,6 +101,33 @@ Run: `pnpm test` (root) or `pnpm --filter @gzim/svelte-datagrid test`
 - **CI** (`ci.yml`): Runs lint + tests on PRs to `main`
 - **CD** (`cd.yml`): On push to `main`/`next` — builds library, publishes to npm via Changesets, deploys website to GitHub Pages
 
+## Changesets (versioning)
+
+This project uses [Changesets](https://github.com/changesets/changesets) for version management. **Any PR that includes a bug fix, new feature, or breaking change must include a changeset commit.**
+
+To add a changeset:
+
+```bash
+pnpm changeset
+```
+
+This launches an interactive prompt — select the affected package (`@gzim/svelte-datagrid`), choose the bump type, and write a summary:
+
+| Change type | When to use                                      |
+| ----------- | ------------------------------------------------ |
+| `patch`     | Bug fixes, style corrections, internal refactors |
+| `minor`     | New features, new props/events (non-breaking)    |
+| `major`     | Breaking API changes                             |
+
+The command creates a file under `.changeset/`. Commit it together with the rest of the changes:
+
+```bash
+git add .changeset/
+git commit -m "chore: add changeset"
+```
+
+PRs without a changeset will not trigger a version bump or npm release when merged.
+
 ## Conventions
 
 - Use **tabs** for indentation
