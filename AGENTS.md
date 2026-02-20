@@ -133,9 +133,16 @@ git commit -m "chore: add changeset"
 
 PRs without a changeset will not trigger a version bump or npm release when merged.
 
+## Pre-PR Checklist
+
+Before creating a PR, complete the checklist defined in `.github/pull_request_template.md`:
+
+1. Give the PR a descriptive title
+2. Run `pnpm run lint` — if it fails due to formatting, run `pnpm run format`, commit the changes, then re-run lint
+3. Run `pnpm run test` — all tests must pass
+
 ## Conventions
 
 - Use **tabs** for indentation
 - **Single quotes**, no trailing commas, 100 char print width
-- PR template requires: descriptive title, lint pass, test pass
 - Version bumps managed via `pnpm changeset`
