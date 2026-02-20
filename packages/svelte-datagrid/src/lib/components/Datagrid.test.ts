@@ -99,6 +99,70 @@ describe('Datagrid', () => {
 	});
 });
 
+describe('Datagrid frozen columns', () => {
+	beforeEach(() => {
+		document.body.innerHTML = '';
+	});
+
+	it('should add frozen-left class to frozen left column headers', async () => {
+		const frozenColumns: GridColumn<Cat>[] = [
+			{ ...columns[0], frozen: 'left' },
+			columns[1],
+			columns[2]
+		];
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: frozenColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		expect(headers[0].classList.contains('frozen-left')).toBe(true);
+		expect(headers[1].classList.contains('frozen-left')).toBe(false);
+		expect(headers[2].classList.contains('frozen-left')).toBe(false);
+	});
+
+	it('should add frozen-right class to frozen right column headers', async () => {
+		const frozenColumns: GridColumn<Cat>[] = [
+			columns[0],
+			columns[1],
+			{ ...columns[2], frozen: 'right' }
+		];
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: frozenColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		expect(headers[2].classList.contains('frozen-right')).toBe(true);
+		expect(headers[0].classList.contains('frozen-right')).toBe(false);
+	});
+
+	it('should not make frozen columns draggable', async () => {
+		const frozenColumns: GridColumn<Cat>[] = [
+			{ ...columns[0], frozen: 'left', draggable: true },
+			{ ...columns[1], draggable: true },
+			{ ...columns[2], frozen: 'right', draggable: true }
+		];
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: frozenColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		expect(headers[0].classList.contains('draggable')).toBe(false);
+		expect(headers[1].classList.contains('draggable')).toBe(true);
+		expect(headers[2].classList.contains('draggable')).toBe(false);
+	});
+
+	it('should not set frozen columns as drop targets during drag', async () => {
+		const frozenColumns: GridColumn<Cat>[] = [
+			{ ...columns[0], frozen: 'left' },
+			{ ...columns[1], draggable: true },
+			{ ...columns[2], draggable: true }
+		];
+		const { findAllByTestId } = render(Datagrid<Cat>, { columns: frozenColumns, rows });
+
+		const headers = await findAllByTestId('columnheader');
+		const [frozen, , source] = headers;
+
+		await fireEvent.dragStart(source);
+		await fireEvent.dragEnter(frozen);
+
+		expect(frozen.classList.contains('dropTarget')).toBe(false);
+	});
+});
+
 describe('Datagrid column drag drop target', () => {
 	beforeEach(() => {
 		document.body.innerHTML = '';

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
 	MIN_COLUMN_WIDTH,
 	calculateDefaultRowsPerPage,
+	calculateFrozenLeftOffsets,
+	calculateFrozenRightOffsets,
 	calculateGridSpaceWidth,
 	calculatePercent,
 	calculateXPositions,
@@ -139,6 +141,87 @@ describe('calculateDefaultRowsPerPage', () => {
 		const result = calculateDefaultRowsPerPage(MAX_DEFAULT_ROWS_PER_PAGE);
 
 		expect(result).toBe(MAX_DEFAULT_ROWS_PER_PAGE);
+	});
+});
+
+describe('calculateFrozenLeftOffsets', () => {
+	it('should return all zeros when no columns are frozen', () => {
+		const columns = [{ width: 100 }, { width: 200 }, { width: 150 }] as Parameters<
+			typeof calculateFrozenLeftOffsets
+		>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenLeftOffsets(columns, widths)).toEqual([0, 0, 0]);
+	});
+
+	it('should return cumulative offsets for frozen-left columns', () => {
+		const columns = [
+			{ width: 100, frozen: 'left' as const },
+			{ width: 200, frozen: 'left' as const },
+			{ width: 150 }
+		] as Parameters<typeof calculateFrozenLeftOffsets>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenLeftOffsets(columns, widths)).toEqual([0, 100, 0]);
+	});
+
+	it('should handle a single frozen-left column', () => {
+		const columns = [
+			{ width: 80, frozen: 'left' as const },
+			{ width: 100 },
+			{ width: 120 }
+		] as Parameters<typeof calculateFrozenLeftOffsets>[0];
+		const widths = [80, 100, 120];
+		expect(calculateFrozenLeftOffsets(columns, widths)).toEqual([0, 0, 0]);
+	});
+
+	it('should not include frozen-right columns in left offsets', () => {
+		const columns = [
+			{ width: 100, frozen: 'left' as const },
+			{ width: 200 },
+			{ width: 150, frozen: 'right' as const }
+		] as Parameters<typeof calculateFrozenLeftOffsets>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenLeftOffsets(columns, widths)).toEqual([0, 0, 0]);
+	});
+});
+
+describe('calculateFrozenRightOffsets', () => {
+	it('should return all zeros when no columns are frozen', () => {
+		const columns = [{ width: 100 }, { width: 200 }, { width: 150 }] as Parameters<
+			typeof calculateFrozenRightOffsets
+		>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenRightOffsets(columns, widths)).toEqual([0, 0, 0]);
+	});
+
+	it('should return cumulative offsets from right for frozen-right columns', () => {
+		const columns = [
+			{ width: 100 },
+			{ width: 200, frozen: 'right' as const },
+			{ width: 150, frozen: 'right' as const }
+		] as Parameters<typeof calculateFrozenRightOffsets>[0];
+		const widths = [100, 200, 150];
+		// col[2] is the rightmost frozen: offset 0; col[1] is next: offset = 150
+		expect(calculateFrozenRightOffsets(columns, widths)).toEqual([0, 150, 0]);
+	});
+
+	it('should handle a single frozen-right column', () => {
+		const columns = [
+			{ width: 100 },
+			{ width: 200 },
+			{ width: 150, frozen: 'right' as const }
+		] as Parameters<typeof calculateFrozenRightOffsets>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenRightOffsets(columns, widths)).toEqual([0, 0, 0]);
+	});
+
+	it('should not include frozen-left columns in right offsets', () => {
+		const columns = [
+			{ width: 100, frozen: 'left' as const },
+			{ width: 200 },
+			{ width: 150, frozen: 'right' as const }
+		] as Parameters<typeof calculateFrozenRightOffsets>[0];
+		const widths = [100, 200, 150];
+		expect(calculateFrozenRightOffsets(columns, widths)).toEqual([0, 0, 0]);
 	});
 });
 

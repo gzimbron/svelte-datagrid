@@ -21,6 +21,46 @@ export function calculateGridSpaceWidth(columnWidths: number[]) {
 	return columnWidths.reduce((acc, width) => acc + width, 0);
 }
 
+/**
+ * Returns an array where each index contains the cumulative width of all
+ * preceding frozen-left columns (i.e. the sticky left offset for that column).
+ * Non-frozen columns get 0.
+ */
+export function calculateFrozenLeftOffsets<T>(
+	columns: GridColumn<T>[],
+	columnWidths: number[]
+): number[] {
+	const offsets: number[] = new Array(columns.length).fill(0);
+	let currentOffset = 0;
+	for (let i = 0; i < columns.length; i++) {
+		if (columns[i].frozen === 'left') {
+			offsets[i] = currentOffset;
+			currentOffset += columnWidths[i];
+		}
+	}
+	return offsets;
+}
+
+/**
+ * Returns an array where each index contains the cumulative width of all
+ * following frozen-right columns (i.e. the sticky right offset for that column).
+ * Non-frozen columns get 0.
+ */
+export function calculateFrozenRightOffsets<T>(
+	columns: GridColumn<T>[],
+	columnWidths: number[]
+): number[] {
+	const offsets: number[] = new Array(columns.length).fill(0);
+	let currentOffset = 0;
+	for (let i = columns.length - 1; i >= 0; i--) {
+		if (columns[i].frozen === 'right') {
+			offsets[i] = currentOffset;
+			currentOffset += columnWidths[i];
+		}
+	}
+	return offsets;
+}
+
 export function getVisibleRowsIndexes(
 	rowHeight: number,
 	scrollTop: number,

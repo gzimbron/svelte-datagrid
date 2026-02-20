@@ -24,10 +24,11 @@
 		{ value: 'C2', label: 'C2' }
 	];
 
-	const columns: GridColumn<Person>[] = [
+	let columns: GridColumn<Person>[] = [
 		{
 			label: 'Zodiac',
 			dataKey: 'zodiac',
+			draggable: true,
 			width: 100
 		},
 		{
@@ -35,20 +36,13 @@
 			dataKey: 'firstName',
 			width: 200,
 			cellComponent: TextboxCell,
-			draggable: true,
-			resizable: true
+			resizable: true,
+			frozen: 'left'
 		},
 		{
 			label: 'Last Name',
 			dataKey: 'lastName',
 			width: 200,
-			draggable: true
-		},
-		{
-			label: 'Married',
-			dataKey: 'married',
-			width: 100,
-			cellComponent: CheckboxCell,
 			draggable: true
 		},
 		{
@@ -58,6 +52,13 @@
 			options: nivelIngles,
 			cellComponent: SelectCell,
 			draggable: true
+		},
+		{
+			label: 'Married',
+			dataKey: 'married',
+			width: 100,
+			cellComponent: CheckboxCell,
+			frozen: 'right'
 		}
 	];
 
@@ -128,6 +129,13 @@
 		scrollToRow(parseInt(value));
 	};
 
+	const setFrozen = (index: number, side: 'left' | 'right', checked: boolean) => {
+		columns = columns.map((col, i) => {
+			if (i !== index) return col;
+			return { ...col, frozen: checked ? side : undefined };
+		});
+	};
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let getGridState: () => any | undefined;
 	let scrollToRow: (index: number) => void | undefined;
@@ -178,6 +186,40 @@
 		</button>
 	</div>
 
+	<div class="frozen-controls">
+		<p class="frozen-title">Frozen Columns</p>
+		<table class="frozen-table">
+			<thead>
+				<tr>
+					<th>Column</th>
+					<th>Left</th>
+					<th>Right</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each columns as column, i}
+					<tr>
+						<td>{column.label}</td>
+						<td>
+							<input
+								type="checkbox"
+								checked={column.frozen === 'left'}
+								on:change={(e) => setFrozen(i, 'left', e.currentTarget.checked)}
+							/>
+						</td>
+						<td>
+							<input
+								type="checkbox"
+								checked={column.frozen === 'right'}
+								on:change={(e) => setFrozen(i, 'right', e.currentTarget.checked)}
+							/>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+
 	<div class="flexy">
 		<label for="allColumnsResizable">
 			<p>Resizable Columns</p>
@@ -209,5 +251,29 @@
 
 	.flexy label {
 		@apply flex flex-col items-center gap-2;
+	}
+
+	.frozen-controls {
+		@apply flex flex-col items-center gap-2 w-full;
+	}
+
+	.frozen-title {
+		@apply font-semibold text-slate-600 text-sm;
+	}
+
+	.frozen-table {
+		@apply text-sm border-collapse;
+	}
+
+	.frozen-table th {
+		@apply px-4 py-1 text-slate-500 font-medium border-b border-slate-300;
+	}
+
+	.frozen-table td {
+		@apply px-4 py-1 text-center border-b border-slate-200;
+	}
+
+	.frozen-table td:first-child {
+		@apply text-left font-medium text-slate-700;
 	}
 </style>
