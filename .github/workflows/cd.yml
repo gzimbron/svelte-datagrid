@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload Artifacts
         if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: "apps/website/build/"
 
@@ -83,4 +83,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
