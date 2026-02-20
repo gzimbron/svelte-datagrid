@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	MIN_COLUMN_WIDTH,
+	calculateDefaultRowsPerPage,
 	calculateGridSpaceWidth,
 	calculatePercent,
 	calculateXPositions,
@@ -8,6 +9,7 @@ import {
 	getVisibleRowsIndexes,
 	updateColumnWidths
 } from './calculateFunctions.js';
+import { MAX_DEFAULT_ROWS_PER_PAGE } from '$lib/configurations.js';
 import type { GridColumn } from '$lib/types.js';
 
 describe('updateColumnWidths', () => {
@@ -94,6 +96,18 @@ describe('getVisibleRowsIndexes', () => {
 
 		expect(result).toEqual(expected);
 	});
+
+	it('should clamp start to 0 when scrollTop is negative', () => {
+		const result = getVisibleRowsIndexes(20, -100, 100, 100, 0);
+
+		expect(result.start).toBe(0);
+	});
+
+	it('should clamp end to totalRows when visible rows exceed total', () => {
+		const result = getVisibleRowsIndexes(20, 0, 1000, 5, 0);
+
+		expect(result.end).toBe(5);
+	});
 });
 
 describe('getRowTop', () => {
@@ -105,6 +119,26 @@ describe('getRowTop', () => {
 		const result = getRowTop(rowIndex, rowHeight);
 
 		expect(result).toEqual(expected);
+	});
+});
+
+describe('calculateDefaultRowsPerPage', () => {
+	it('should return rowsLength when less than MAX_DEFAULT_ROWS_PER_PAGE', () => {
+		const result = calculateDefaultRowsPerPage(5);
+
+		expect(result).toBe(5);
+	});
+
+	it('should return MAX_DEFAULT_ROWS_PER_PAGE when rowsLength exceeds it', () => {
+		const result = calculateDefaultRowsPerPage(MAX_DEFAULT_ROWS_PER_PAGE + 1);
+
+		expect(result).toBe(MAX_DEFAULT_ROWS_PER_PAGE);
+	});
+
+	it('should return MAX_DEFAULT_ROWS_PER_PAGE when rowsLength equals it', () => {
+		const result = calculateDefaultRowsPerPage(MAX_DEFAULT_ROWS_PER_PAGE);
+
+		expect(result).toBe(MAX_DEFAULT_ROWS_PER_PAGE);
 	});
 });
 

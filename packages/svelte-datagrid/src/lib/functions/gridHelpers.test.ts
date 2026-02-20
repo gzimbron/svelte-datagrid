@@ -37,4 +37,18 @@ describe('swapGridColums', () => {
 
 		expect(columns).toEqual(columnsCopy);
 	});
+
+	it('should return same column order when swapping a column with itself', () => {
+		const columns = [
+			{ label: 'Column 1' },
+			{ label: 'Column 2' },
+			{ label: 'Column 3' }
+		] as GridColumn<unknown>[];
+
+		const result = swapGridColums(columns, 1, 1);
+
+		expect(result.columns).toEqual(columns);
+		expect(result.from).toEqual(columns[1]);
+		expect(result.to).toEqual(columns[1]);
+	});
 });
