@@ -85,4 +85,14 @@ export interface GridProps {
 	 * @default RowHeight * 6
 	 */
 	'--grid-height'?: string;
+	/**
+	 * Box shadow for frozen-left columns
+	 * @default '2px 0 4px rgba(0, 0, 0, 0.15)'
+	 */
+	'--frozen-left-shadow'?: string;
+	/**
+	 * Box shadow for frozen-right columns
+	 * @default '-2px 0 4px rgba(0, 0, 0, 0.15)'
+	 */
+	'--frozen-right-shadow'?: string;
 }

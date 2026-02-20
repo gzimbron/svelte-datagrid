@@ -103,7 +103,12 @@ Run: `pnpm test` (root) or `pnpm --filter @gzim/svelte-datagrid test`
 
 ## Changesets (versioning)
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management. **Any PR that includes a bug fix, new feature, or breaking change must include a changeset commit.**
+This project uses [Changesets](https://github.com/changesets/changesets) for version management.
+
+**Important:** Do NOT add a changeset immediately with every PR. Changesets that bump the version should only be created in two scenarios:
+
+1. **Hotfix releases** — critical bug fixes that need to be published to npm right away. In this case, include the changeset in the same PR as the fix.
+2. **Planned release versions** — when a release is explicitly planned, create a dedicated changeset PR to bump the version. This groups multiple changes into a single release and avoids noisy, unnecessary deployments.
 
 To add a changeset:
 
@@ -128,9 +133,16 @@ git commit -m "chore: add changeset"
 
 PRs without a changeset will not trigger a version bump or npm release when merged.
 
+## Pre-PR Checklist
+
+Before creating a PR, complete the checklist defined in `.github/pull_request_template.md`:
+
+1. Give the PR a descriptive title
+2. Run `pnpm run lint` — if it fails due to formatting, run `pnpm run format`, commit the changes, then re-run lint
+3. Run `pnpm run test` — all tests must pass
+
 ## Conventions
 
 - Use **tabs** for indentation
 - **Single quotes**, no trailing commas, 100 char print width
-- PR template requires: descriptive title, lint pass, test pass
 - Version bumps managed via `pnpm changeset`

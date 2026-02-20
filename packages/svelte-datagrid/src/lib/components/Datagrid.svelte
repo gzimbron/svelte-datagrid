@@ -11,9 +11,10 @@
 
 	import {
 		calculateDefaultRowsPerPage,
+		calculateFrozenLeftOffsets,
+		calculateFrozenRightOffsets,
 		calculateGridSpaceWidth,
 		calculatePercent,
-		calculateXPositions,
 		getRowTop,
 		getVisibleRowsIndexes,
 		MIN_COLUMN_WIDTH,
@@ -145,6 +146,7 @@
 
 	let svelteGridWrapper: HTMLDivElement;
 	let gridBody: HTMLDivElement;
+	let bodyClientWidth = 0;
 	let isResizing = false;
 	let isDragging = false;
 	let columnDragging = -1;
@@ -169,7 +171,44 @@
 
 	$: columnWidths = updateColumnWidths(columns);
 	$: gridSpaceWidth = calculateGridSpaceWidth(columnWidths);
-	$: xPositions = calculateXPositions(columnWidths);
+	$: frozenLeftOffsets = calculateFrozenLeftOffsets(columns, columnWidths);
+	$: frozenRightOffsets = calculateFrozenRightOffsets(columns, columnWidths);
+
+	// Reactive cell positions: frozen columns pinned to edges, non-frozen laid out without gaps
+	$: cellLeftPositions = (() => {
+		const positions = new Array(columns.length).fill(0);
+
+		// Total width of frozen-left columns (reserve space at left)
+		const frozenLeftTotal = columns.reduce(
+			(sum, col, i) => (col.frozen === 'left' ? sum + columnWidths[i] : sum),
+			0
+		);
+
+		// Non-frozen columns laid out consecutively after frozen-left area
+		let x = frozenLeftTotal;
+		for (let i = 0; i < columns.length; i++) {
+			if (!columns[i].frozen) {
+				positions[i] = x;
+				x += columnWidths[i];
+			}
+		}
+
+		// Frozen-left: pinned to viewport left edge
+		for (let i = 0; i < columns.length; i++) {
+			if (columns[i].frozen === 'left') {
+				positions[i] = scrollLeft + frozenLeftOffsets[i];
+			}
+		}
+
+		// Frozen-right: pinned to viewport right edge
+		for (let i = 0; i < columns.length; i++) {
+			if (columns[i].frozen === 'right') {
+				positions[i] = scrollLeft + bodyClientWidth - frozenRightOffsets[i] - columnWidths[i];
+			}
+		}
+
+		return positions;
+	})();
 	$: totalRows = rows.length;
 	$: gridSpaceHeight = rowHeight * rows.length;
 	$: visibleRowsIndexes = getVisibleRowsIndexes(
@@ -281,22 +320,27 @@
 					title={column.label || ''}
 					role="columnheader"
 					style:width="{columnWidths[i]}px"
-					style:left="{xPositions[i]}px"
+					style:left="{cellLeftPositions[i]}px"
 					class:resizingColumn={isResizing && columnResizing == i}
-					draggable={!isResizing && (allColumnsDraggable || column.draggable)}
-					class:draggable={!isResizing && (allColumnsDraggable || column.draggable)}
+					draggable={!isResizing && !column.frozen && (allColumnsDraggable || column.draggable)}
+					class:draggable={!isResizing &&
+						!column.frozen &&
+						(allColumnsDraggable || column.draggable)}
 					class:resizable={!isResizing && (allColumnsResizable || column.resizable)}
 					class:dragging={isDragging && columnDragging == i}
 					class:dropTarget={isDragging &&
 						columnDropTarget === i &&
 						columnDropTarget !== columnDragging}
+					class:frozen-left={column.frozen === 'left'}
+					class:frozen-right={column.frozen === 'right'}
 					on:dragenter={() => {
-						if (isDragging && (allColumnsDraggable || column.draggable)) columnDropTarget = i;
+						if (isDragging && !column.frozen && (allColumnsDraggable || column.draggable))
+							columnDropTarget = i;
 					}}
 					on:dragover={(e) => {
 						if (isDragging) e.preventDefault();
 					}}
-					animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
+					animate:flip={isResizing || column.frozen ? NO_TRANSITION_EFFECT : animationParams}
 					use:reziseColumn={{
 						resizable: allColumnsResizable || column.resizable,
 						startResize() {
@@ -314,7 +358,7 @@
 						}
 					}}
 					use:dragAndDrop={{
-						draggable: allColumnsDraggable || column.draggable,
+						draggable: !column.frozen && (allColumnsDraggable || column.draggable),
 						dragStart: () => {
 							isDragging = true;
 							columnDragging = i;
@@ -338,6 +382,7 @@
 								if (
 									clientX > left &&
 									clientX < right &&
+									!columns[index].frozen &&
 									(allColumnsDraggable || columns[index].draggable) &&
 									index != columnDragging
 								) {
@@ -361,7 +406,13 @@
 		</div>
 	</div>
 
-	<div role="rowgroup" class="svelte-grid-body" bind:this={gridBody} on:scroll={onScroll}>
+	<div
+		role="rowgroup"
+		class="svelte-grid-body"
+		bind:this={gridBody}
+		bind:clientWidth={bodyClientWidth}
+		on:scroll={onScroll}
+	>
 		<div class="grid-space"></div>
 
 		{#each visibleRows as row, virtualRowIndex}
@@ -382,10 +433,12 @@
 						data-column={j}
 						data-row={row.i}
 						style="width:{columnWidths[j]}px"
-						style:left="{xPositions[j]}px"
+						style:left="{cellLeftPositions[j]}px"
 						class:resizingColumn={isResizing && columnResizing == j}
 						class:draggableColumnCell={allColumnsDraggable || column.draggable}
-						animate:flip={isResizing ? NO_TRANSITION_EFFECT : animationParams}
+						class:frozen-left={column.frozen === 'left'}
+						class:frozen-right={column.frozen === 'right'}
+						animate:flip={isResizing || column.frozen ? NO_TRANSITION_EFFECT : animationParams}
 					>
 						<div class="cell-container" class:cell-default={!column.cellComponent}>
 							{#if column.cellComponent}
@@ -588,5 +641,27 @@
 
 	.grid-cell.resizingColumn {
 		border-right: var(--border-resizing, 2px solid #666);
+	}
+
+	.grid-cell.frozen-left,
+	.grid-cell.frozen-right {
+		z-index: 5;
+		background: var(--cell-bg, white);
+	}
+
+	.columnheader.frozen-left,
+	.columnheader.frozen-right {
+		z-index: 5;
+		background: var(--head-bg, white);
+	}
+
+	.grid-cell.frozen-left,
+	.columnheader.frozen-left {
+		box-shadow: var(--frozen-left-shadow, 2px 0 4px rgba(0, 0, 0, 0.15));
+	}
+
+	.grid-cell.frozen-right,
+	.columnheader.frozen-right {
+		box-shadow: var(--frozen-right-shadow, -2px 0 4px rgba(0, 0, 0, 0.15));
 	}
 </style>

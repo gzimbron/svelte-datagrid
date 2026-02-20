@@ -11,6 +11,11 @@ export type GridColumn<T> = {
 	options?: GridColumnOption[];
 	draggable?: boolean;
 	resizable?: boolean;
+	/**
+	 * Freeze the column to the left or right side of the grid.
+	 * Frozen columns remain visible during horizontal scroll.
+	 */
+	frozen?: 'left' | 'right';
 };
 
 export type GridColumnOption = {
