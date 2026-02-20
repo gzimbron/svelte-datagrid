@@ -103,7 +103,12 @@ Run: `pnpm test` (root) or `pnpm --filter @gzim/svelte-datagrid test`
 
 ## Changesets (versioning)
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management. **Any PR that includes a bug fix, new feature, or breaking change must include a changeset commit.**
+This project uses [Changesets](https://github.com/changesets/changesets) for version management.
+
+**Important:** Do NOT add a changeset immediately with every PR. Changesets that bump the version should only be created in two scenarios:
+
+1. **Hotfix releases** — critical bug fixes that need to be published to npm right away. In this case, include the changeset in the same PR as the fix.
+2. **Planned release versions** — when a release is explicitly planned, create a dedicated changeset PR to bump the version. This groups multiple changes into a single release and avoids noisy, unnecessary deployments.
 
 To add a changeset:
 
